@@ -1,0 +1,36 @@
+/**
+ * Council Controller Admin Styles
+ */
+
+.council-logo-upload {
+    max-width: 600px;
+}
+
+.council-logo-preview {
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: inline-block;
+    min-width: 200px;
+}
+
+.council-logo-preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 2px;
+}
+
+.council-upload-logo-button,
+.council-remove-logo-button {
+    margin-right: 10px;
+}
+
+.council-remove-logo-button {
+    color: #b32d2e;
+}
+
+.council-remove-logo-button:hover {
+    color: #dc3232;
+    border-color: #dc3232;
+}
