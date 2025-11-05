@@ -57,6 +57,25 @@ $logo_id = Council_Controller::get_council_logo_id();
 - WordPress 5.0 or higher
 - PHP 7.0 or higher
 
+## Versioning
+
+This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
+
+**Current Version:** 1.0.0
+
+### Version Format
+
+Given a version number MAJOR.MINOR.PATCH:
+- **MAJOR** version changes when making incompatible API changes
+- **MINOR** version changes when adding functionality in a backward compatible manner
+- **PATCH** version changes when making backward compatible bug fixes
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+For technical details and guidelines for automated agents, see [AGENTS.md](AGENTS.md).
+
 ## Future Enhancements
 
 - Shortcodes to display council information on the front-end
@@ -64,6 +83,10 @@ $logo_id = Council_Controller::get_council_logo_id();
 - Multiple logo sizes/variations
 - Social media links
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed list of changes for each version.
+
 ## License
 
-This plugin is provided as-is for use on council websites.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

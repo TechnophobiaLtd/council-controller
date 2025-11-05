@@ -5,6 +5,11 @@
  * Version: 1.0.0
  * Author: Council Controller
  * Text Domain: council-controller
+ * License: MIT
+ * Requires at least: 5.0
+ * Requires PHP: 7.0
+ *
+ * This plugin follows Semantic Versioning (https://semver.org/)
  */
 
 // Exit if accessed directly
