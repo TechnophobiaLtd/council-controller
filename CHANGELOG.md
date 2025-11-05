@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Council Name text field with sanitization
 - Council Logo field with WordPress Media Library integration
 - Settings persistence using WordPress Settings API
+- **Three shortcodes for displaying council information:**
+  - `[council_name]` - Display council name with optional CSS class
+  - `[council_logo]` - Display council logo with customizable size, class, and optional link
+  - `[council_info]` - Display both name and logo together with flexible options
 - Public API methods for accessing council settings:
   - `Council_Controller::get_council_name()`
   - `Council_Controller::get_council_logo_url()`

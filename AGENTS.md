@@ -76,6 +76,19 @@ Council_Controller::get_council_logo_url()    // Returns string (URL or empty)
 Council_Controller::get_council_logo_id()     // Returns int (attachment ID or empty)
 ```
 
+### Shortcodes
+
+The plugin provides three shortcodes for displaying council information:
+
+1. **`[council_name]`** - Displays the council name
+   - Attribute: `class` (optional CSS class)
+   
+2. **`[council_logo]`** - Displays the council logo
+   - Attributes: `size` (thumbnail/medium/large/full), `class`, `link` (yes/no)
+   
+3. **`[council_info]`** - Displays both name and logo
+   - Attributes: `logo_size`, `show_name` (yes/no), `show_logo` (yes/no), `class`
+
 ### Internal Methods
 
 - `add_admin_menu()` - Registers the admin menu page
@@ -83,6 +96,10 @@ Council_Controller::get_council_logo_id()     // Returns int (attachment ID or e
 - `sanitize_settings()` - Sanitizes input data
 - `render_settings_page()` - Renders the main settings page
 - `enqueue_admin_scripts()` - Conditionally loads assets
+- `register_shortcodes()` - Registers all shortcodes
+- `shortcode_council_name()` - Handles [council_name] shortcode
+- `shortcode_council_logo()` - Handles [council_logo] shortcode
+- `shortcode_council_info()` - Handles [council_info] shortcode
 
 ## Database Structure
 
@@ -138,8 +155,9 @@ council-controller/
 3. Follow existing naming conventions
 4. Add settings fields via `register_settings()` and `add_settings_field()`
 5. Create corresponding sanitization in `sanitize_settings()`
-6. Update version number according to Semantic Versioning
-7. Document changes in CHANGELOG.md
+6. For new shortcodes, register them in `register_shortcodes()` and create handler methods
+7. Update version number according to Semantic Versioning
+8. Document changes in CHANGELOG.md and README.md
 
 ### When Fixing Bugs
 
@@ -168,6 +186,16 @@ The media uploader is implemented in `assets/js/admin.js` and uses:
 ### Updating Styles
 
 Admin styles are in `assets/css/admin.css` and are only loaded on the settings page. Follow WordPress admin styling conventions.
+
+### Adding a New Shortcode
+
+1. Register shortcode in `register_shortcodes()` using `add_shortcode()`
+2. Create handler method (e.g., `shortcode_new_shortcode()`)
+3. Use `shortcode_atts()` to define and parse attributes
+4. Properly escape all output using `esc_html()`, `esc_attr()`, `esc_url()`
+5. Return empty string if content is not available
+6. Document the shortcode in README.md with examples
+7. Update CHANGELOG.md
 
 ## Security Considerations for Agents
 

@@ -8,7 +8,7 @@ Council Controller provides a simple admin interface to manage your council's ba
 - Council Name
 - Council Logo (uploaded via WordPress Media Library)
 
-This information can be accessed programmatically and used in shortcodes (future functionality).
+This information can be accessed programmatically and displayed on your website using shortcodes.
 
 ## Installation
 
@@ -29,9 +29,57 @@ The plugin will be automatically activated - no need to activate it through the 
 4. Click "Choose Logo" to select or upload a logo from the media library
 5. Click "Save Settings"
 
+### Using Shortcodes
+
+The plugin provides three shortcodes to display council information on your website:
+
+#### `[council_name]`
+Displays the council name.
+
+**Attributes:**
+- `class` - Optional CSS class to add to the wrapper span
+
+**Examples:**
+```
+[council_name]
+[council_name class="my-council-name"]
+```
+
+#### `[council_logo]`
+Displays the council logo.
+
+**Attributes:**
+- `size` - Image size: `thumbnail`, `medium`, `large`, or `full` (default: `full`)
+- `class` - Optional CSS class to add to the image
+- `link` - Whether to link to the home page: `yes` or `no` (default: `no`)
+
+**Examples:**
+```
+[council_logo]
+[council_logo size="medium"]
+[council_logo size="large" class="header-logo" link="yes"]
+```
+
+#### `[council_info]`
+Displays both council name and logo together in a formatted block.
+
+**Attributes:**
+- `logo_size` - Logo image size: `thumbnail`, `medium`, `large`, or `full` (default: `medium`)
+- `show_name` - Show the name: `yes` or `no` (default: `yes`)
+- `show_logo` - Show the logo: `yes` or `no` (default: `yes`)
+- `class` - Optional CSS class to add to the wrapper div
+
+**Examples:**
+```
+[council_info]
+[council_info logo_size="large"]
+[council_info show_logo="no"]
+[council_info logo_size="thumbnail" class="sidebar-council"]
+```
+
 ### Accessing Settings Programmatically
 
-You can access the council settings in your theme or other plugins:
+You can also access the council settings in your theme or other plugins:
 
 ```php
 // Get council name
@@ -46,6 +94,10 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 ## Features
 
+- **Shortcodes**: Three shortcodes to display council information anywhere on your site
+  - `[council_name]` - Display council name
+  - `[council_logo]` - Display council logo with customizable size and styling
+  - `[council_info]` - Display name and logo together
 - **WordPress Settings API Integration**: Proper settings management using WordPress best practices
 - **Media Library Integration**: Easy logo selection using the native WordPress media uploader
 - **Sanitization & Security**: All inputs are properly sanitized and escaped
@@ -78,10 +130,10 @@ For technical details and guidelines for automated agents, see [AGENTS.md](AGENT
 
 ## Future Enhancements
 
-- Shortcodes to display council information on the front-end
 - Additional fields (address, phone, email, etc.)
-- Multiple logo sizes/variations
 - Social media links
+- Custom CSS styling options
+- Widget support
 
 ## Changelog
 

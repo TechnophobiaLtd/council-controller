@@ -49,6 +49,7 @@ class Council_Controller {
         add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
         add_action( 'admin_init', array( $this, 'register_settings' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+        add_action( 'init', array( $this, 'register_shortcodes' ) );
     }
     
     /**
@@ -296,6 +297,150 @@ class Council_Controller {
     public static function get_council_logo_id() {
         $options = get_option( self::OPTION_NAME, array() );
         return isset( $options['council_logo'] ) ? $options['council_logo'] : '';
+    }
+    
+    /**
+     * Register shortcodes
+     */
+    public function register_shortcodes() {
+        add_shortcode( 'council_name', array( $this, 'shortcode_council_name' ) );
+        add_shortcode( 'council_logo', array( $this, 'shortcode_council_logo' ) );
+        add_shortcode( 'council_info', array( $this, 'shortcode_council_info' ) );
+    }
+    
+    /**
+     * Shortcode: [council_name]
+     * Displays the council name
+     */
+    public function shortcode_council_name( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'class' => '',
+            ),
+            $atts,
+            'council_name'
+        );
+        
+        $council_name = self::get_council_name();
+        
+        if ( empty( $council_name ) ) {
+            return '';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        return '<span' . $class_attr . '>' . esc_html( $council_name ) . '</span>';
+    }
+    
+    /**
+     * Shortcode: [council_logo]
+     * Displays the council logo
+     * 
+     * Attributes:
+     * - size: thumbnail, medium, large, full (default: full)
+     * - class: CSS class to add to the image
+     * - link: yes/no - whether to link to the home page (default: no)
+     */
+    public function shortcode_council_logo( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'size'  => 'full',
+                'class' => '',
+                'link'  => 'no',
+            ),
+            $atts,
+            'council_logo'
+        );
+        
+        $logo_id = self::get_council_logo_id();
+        
+        if ( empty( $logo_id ) ) {
+            return '';
+        }
+        
+        // Get the image at the specified size
+        $image = wp_get_attachment_image(
+            $logo_id,
+            $atts['size'],
+            false,
+            array(
+                'class' => $atts['class'],
+                'alt'   => esc_attr( self::get_council_name() ),
+            )
+        );
+        
+        if ( empty( $image ) ) {
+            return '';
+        }
+        
+        // Optionally wrap in a link to home page
+        if ( 'yes' === strtolower( $atts['link'] ) ) {
+            $image = '<a href="' . esc_url( home_url( '/' ) ) . '">' . $image . '</a>';
+        }
+        
+        return $image;
+    }
+    
+    /**
+     * Shortcode: [council_info]
+     * Displays council name and logo together
+     * 
+     * Attributes:
+     * - logo_size: thumbnail, medium, large, full (default: medium)
+     * - show_name: yes/no - whether to show the name (default: yes)
+     * - show_logo: yes/no - whether to show the logo (default: yes)
+     * - class: CSS class to add to the wrapper div
+     */
+    public function shortcode_council_info( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'logo_size' => 'medium',
+                'show_name' => 'yes',
+                'show_logo' => 'yes',
+                'class'     => '',
+            ),
+            $atts,
+            'council_info'
+        );
+        
+        $output = '';
+        $council_name = self::get_council_name();
+        $logo_id = self::get_council_logo_id();
+        
+        // Return empty if nothing to display
+        if ( ( 'no' === strtolower( $atts['show_name'] ) || empty( $council_name ) ) &&
+             ( 'no' === strtolower( $atts['show_logo'] ) || empty( $logo_id ) ) ) {
+            return '';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="council-info ' . esc_attr( $atts['class'] ) . '"' : ' class="council-info"';
+        
+        $output .= '<div' . $class_attr . '>';
+        
+        // Show logo if enabled and available
+        if ( 'yes' === strtolower( $atts['show_logo'] ) && ! empty( $logo_id ) ) {
+            $logo = wp_get_attachment_image(
+                $logo_id,
+                $atts['logo_size'],
+                false,
+                array(
+                    'class' => 'council-logo',
+                    'alt'   => esc_attr( $council_name ),
+                )
+            );
+            if ( ! empty( $logo ) ) {
+                $output .= '<div class="council-logo-wrapper">' . $logo . '</div>';
+            }
+        }
+        
+        // Show name if enabled and available
+        if ( 'yes' === strtolower( $atts['show_name'] ) && ! empty( $council_name ) ) {
+            $output .= '<h2 class="council-name">' . esc_html( $council_name ) . '</h2>';
+        }
+        
+        $output .= '</div>';
+        
+        return $output;
     }
 }
 
