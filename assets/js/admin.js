@@ -22,9 +22,9 @@
             
             // Create the media uploader
             mediaUploader = wp.media({
-                title: 'Choose Council Logo',
+                title: councilControllerL10n.mediaTitle,
                 button: {
-                    text: 'Use this logo'
+                    text: councilControllerL10n.mediaButton
                 },
                 multiple: false,
                 library: {

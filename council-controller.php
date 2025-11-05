@@ -147,6 +147,10 @@ class Council_Controller {
         
         if ( $logo_id ) {
             $logo_url = wp_get_attachment_url( $logo_id );
+            // Handle case where attachment doesn't exist
+            if ( false === $logo_url ) {
+                $logo_url = '';
+            }
         }
         ?>
         <div class="council-logo-upload">
@@ -213,6 +217,16 @@ class Council_Controller {
             true
         );
         
+        // Localize script for translations
+        wp_localize_script(
+            'council-controller-admin',
+            'councilControllerL10n',
+            array(
+                'mediaTitle'  => __( 'Choose Council Logo', 'council-controller' ),
+                'mediaButton' => __( 'Use this logo', 'council-controller' ),
+            )
+        );
+        
         // Enqueue custom styles
         wp_enqueue_style(
             'council-controller-admin',
@@ -263,7 +277,9 @@ class Council_Controller {
         $logo_id = isset( $options['council_logo'] ) ? $options['council_logo'] : '';
         
         if ( $logo_id ) {
-            return wp_get_attachment_url( $logo_id );
+            $logo_url = wp_get_attachment_url( $logo_id );
+            // Return empty string if attachment doesn't exist
+            return ( false === $logo_url ) ? '' : $logo_url;
         }
         
         return '';
