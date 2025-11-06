@@ -1,21 +1,48 @@
-MIT License
+Council Controller Software License
 
-Copyright (c) 2025 Council Controller
+Copyright (c) 2025 Technophobia Ltd
+All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Definitions
+- "Software" means the Council Controller codebase and associated documentation contained in this repository.
+- "Technophobia" means Technophobia Ltd.
+- "Authorized Councils" means local authority councils whose public websites are hosted by Technophobia under an active hosting agreement.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+2. License Grant
+Subject to the terms of this License, Technophobia grants a non-exclusive, non-transferable, non-sublicensable, revocable license to use, copy, and modify the Software solely for the purposes of developing, operating, and maintaining Authorized Councils' public websites that are hosted by Technophobia. This license is granted only to:
+- Technophobia; and
+- Authorized Councils.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+3. Scope and Restrictions
+- The Software may only be used in connection with websites hosted by Technophobia for Authorized Councils.
+- Distribution, disclosure, or provision of the Software to any third party other than Technophobia or an Authorized Council is prohibited without prior written consent from Technophobia.
+- The Software may not be sold, relicensed, or sublicensed, in whole or in part, to any third party.
+- Use of the Software for any purpose other than the operation of Authorized Councils' websites hosted by Technophobia is prohibited.
+
+4. Term and Termination
+- This License remains in effect while an Authorized Council maintains an active hosting agreement with Technophobia.
+- Upon termination or expiration of a hosting agreement, all rights granted to the relevant Authorized Council immediately terminate, and the Authorized Council must cease use and remove all copies of the Software in its possession, except to the extent otherwise agreed in writing by Technophobia.
+- Technophobia may terminate this License immediately upon breach. Upon termination, the licensee must cease use and destroy or return all copies of the Software.
+
+5. Ownership
+The Software is licensed, not sold. Technophobia retains all right, title, and interest in and to the Software, including all intellectual property rights therein.
+
+6. Confidentiality
+Except as expressly permitted by this License, the Software and its source code shall not be disclosed to any third party. Reasonable measures must be taken to protect the confidentiality of the Software.
+
+7. No Warranty
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. 
+
+8. Limitation of Liability
+IN NO EVENT SHALL TECHNOPHOBIA BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THIS LICENSE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. TECHNOPHOBIA'S AGGREGATE LIABILITY ARISING OUT OF THIS LICENSE SHALL NOT EXCEED THE AMOUNT PAID (IF ANY) FOR THE LICENSE TO THE SOFTWARE.
+
+9. Compliance and Audit
+Authorized Councils shall use the Software in compliance with applicable laws and shall, upon reasonable notice, cooperate with Technophobia to verify compliance with this License.
+
+10. Governing Law
+This License and any dispute arising out of or in connection with it shall be governed by and construed in accordance with the laws of England and Wales, and the courts of England and Wales shall have exclusive jurisdiction.
+
+11. Contact
+For licensing questions or permissions beyond the scope of this License, contact: info@technophobia.co.uk
+
+By using, copying, or modifying the Software, you agree to be bound by the terms of this License.
