@@ -5,6 +5,36 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2025-11-10
+
+### Added
+- **Individual Heading Colors**: Replaced single heading color with individual H1-H6 colors
+  - H1 color with CSS variable `--council-h1`
+  - H2 color with CSS variable `--council-h2`
+  - H3 color with CSS variable `--council-h3`
+  - H4 color with CSS variable `--council-h4`
+  - H5 color with CSS variable `--council-h5`
+  - H6 color with CSS variable `--council-h6`
+- **Link Color**: New link color field with CSS variable `--council-link`
+- WordPress Color Picker integration for all new color fields
+- Frontend CSS variable output for heading and link colors
+
+### Changed
+- Replaced generic `--council-heading` variable with specific heading level variables
+- Admin interface now includes 16 total color fields (3 base + 6 headings + 1 link + 1 body + 4 button + 1 button text)
+- Enhanced color management section with granular heading control
+- Updated documentation with individual heading color examples
+
+### Improved
+- Fine-grained typography color control
+- Better heading hierarchy styling capabilities
+- Individual heading level customization for design flexibility
+- Link color customization for improved branding
+
+### Removed
+- Generic `heading_color` field (replaced with individual h1-h6 colors)
+- CSS variable `--council-heading` (replaced with `--council-h1` through `--council-h6`)
+
 ## [1.4.0] - 2025-11-10
 
 ### Added
@@ -114,6 +144,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct file access prevention via `ABSPATH` check
 - Proper handling of attachment URL false returns
 
+[1.5.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.5.0
 [1.4.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.4.0
 [1.3.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.3.0
 [1.2.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.2.0

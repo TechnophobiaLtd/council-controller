@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.4.0
+ * Version: 1.5.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -244,9 +244,57 @@ class Council_Controller {
         );
         
         add_settings_field(
-            'heading_color',
-            __( 'Heading Color', 'council-controller' ),
-            array( $this, 'render_heading_color_field' ),
+            'h1_color',
+            __( 'H1 Color', 'council-controller' ),
+            array( $this, 'render_h1_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'h2_color',
+            __( 'H2 Color', 'council-controller' ),
+            array( $this, 'render_h2_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'h3_color',
+            __( 'H3 Color', 'council-controller' ),
+            array( $this, 'render_h3_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'h4_color',
+            __( 'H4 Color', 'council-controller' ),
+            array( $this, 'render_h4_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'h5_color',
+            __( 'H5 Color', 'council-controller' ),
+            array( $this, 'render_h5_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'h6_color',
+            __( 'H6 Color', 'council-controller' ),
+            array( $this, 'render_h6_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'link_color',
+            __( 'Link Color', 'council-controller' ),
+            array( $this, 'render_link_color_field' ),
             'council-settings',
             'council_controller_colors_section'
         );
@@ -314,7 +362,7 @@ class Council_Controller {
         }
         
         // Sanitize color fields
-        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'heading_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
+        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'h1_color', 'h2_color', 'h3_color', 'h4_color', 'h5_color', 'h6_color', 'link_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
         foreach ( $color_fields as $field ) {
             if ( isset( $input[ $field ] ) ) {
                 $sanitized[ $field ] = sanitize_hex_color( $input[ $field ] );
@@ -524,20 +572,134 @@ class Council_Controller {
     }
     
     /**
-     * Render heading color field
+     * Render h1 color field
      */
-    public function render_heading_color_field() {
+    public function render_h1_color_field() {
         $options = get_option( self::OPTION_NAME, array() );
-        $heading_color = isset( $options['heading_color'] ) ? $options['heading_color'] : '';
+        $h1_color = isset( $options['h1_color'] ) ? $options['h1_color'] : '';
         ?>
         <input type="text" 
-               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[heading_color]" 
-               id="heading_color" 
-               value="<?php echo esc_attr( $heading_color ); ?>" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[h1_color]" 
+               id="h1_color" 
+               value="<?php echo esc_attr( $h1_color ); ?>" 
                class="council-color-picker" 
                data-default-color="" />
         <p class="description">
-            <?php esc_html_e( 'Default heading color. Available as CSS variable: --council-heading', 'council-controller' ); ?>
+            <?php esc_html_e( 'H1 heading color. Available as CSS variable: --council-h1', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render h2 color field
+     */
+    public function render_h2_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $h2_color = isset( $options['h2_color'] ) ? $options['h2_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[h2_color]" 
+               id="h2_color" 
+               value="<?php echo esc_attr( $h2_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'H2 heading color. Available as CSS variable: --council-h2', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render h3 color field
+     */
+    public function render_h3_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $h3_color = isset( $options['h3_color'] ) ? $options['h3_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[h3_color]" 
+               id="h3_color" 
+               value="<?php echo esc_attr( $h3_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'H3 heading color. Available as CSS variable: --council-h3', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render h4 color field
+     */
+    public function render_h4_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $h4_color = isset( $options['h4_color'] ) ? $options['h4_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[h4_color]" 
+               id="h4_color" 
+               value="<?php echo esc_attr( $h4_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'H4 heading color. Available as CSS variable: --council-h4', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render h5 color field
+     */
+    public function render_h5_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $h5_color = isset( $options['h5_color'] ) ? $options['h5_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[h5_color]" 
+               id="h5_color" 
+               value="<?php echo esc_attr( $h5_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'H5 heading color. Available as CSS variable: --council-h5', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render h6 color field
+     */
+    public function render_h6_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $h6_color = isset( $options['h6_color'] ) ? $options['h6_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[h6_color]" 
+               id="h6_color" 
+               value="<?php echo esc_attr( $h6_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'H6 heading color. Available as CSS variable: --council-h6', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render link color field
+     */
+    public function render_link_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $link_color = isset( $options['link_color'] ) ? $options['link_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[link_color]" 
+               id="link_color" 
+               value="<?php echo esc_attr( $link_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Link color. Available as CSS variable: --council-link', 'council-controller' ); ?>
         </p>
         <?php
     }
@@ -657,7 +819,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
             array( 'jquery', 'wp-color-picker' ),
-            '1.4.0',
+            '1.5.0',
             true
         );
         
@@ -676,7 +838,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.4.0'
+            '1.5.0'
         );
     }
     
@@ -726,8 +888,32 @@ class Council_Controller {
             $css_vars[] = '--council-tertiary: ' . esc_attr( $options['tertiary_color'] );
         }
         
-        if ( ! empty( $options['heading_color'] ) ) {
-            $css_vars[] = '--council-heading: ' . esc_attr( $options['heading_color'] );
+        if ( ! empty( $options['h1_color'] ) ) {
+            $css_vars[] = '--council-h1: ' . esc_attr( $options['h1_color'] );
+        }
+        
+        if ( ! empty( $options['h2_color'] ) ) {
+            $css_vars[] = '--council-h2: ' . esc_attr( $options['h2_color'] );
+        }
+        
+        if ( ! empty( $options['h3_color'] ) ) {
+            $css_vars[] = '--council-h3: ' . esc_attr( $options['h3_color'] );
+        }
+        
+        if ( ! empty( $options['h4_color'] ) ) {
+            $css_vars[] = '--council-h4: ' . esc_attr( $options['h4_color'] );
+        }
+        
+        if ( ! empty( $options['h5_color'] ) ) {
+            $css_vars[] = '--council-h5: ' . esc_attr( $options['h5_color'] );
+        }
+        
+        if ( ! empty( $options['h6_color'] ) ) {
+            $css_vars[] = '--council-h6: ' . esc_attr( $options['h6_color'] );
+        }
+        
+        if ( ! empty( $options['link_color'] ) ) {
+            $css_vars[] = '--council-link: ' . esc_attr( $options['link_color'] );
         }
         
         if ( ! empty( $options['body_color'] ) ) {

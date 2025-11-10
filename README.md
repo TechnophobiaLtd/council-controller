@@ -40,7 +40,13 @@ The plugin provides a color management system that outputs CSS variables for use
 - `--council-primary` - Primary brand color
 - `--council-secondary` - Secondary brand color
 - `--council-tertiary` - Tertiary brand color
-- `--council-heading` - Default heading color
+- `--council-h1` - H1 heading color
+- `--council-h2` - H2 heading color
+- `--council-h3` - H3 heading color
+- `--council-h4` - H4 heading color
+- `--council-h5` - H5 heading color
+- `--council-h6` - H6 heading color
+- `--council-link` - Link color
 - `--council-body-text` - Default body text color
 - `--council-button` - Button background color
 - `--council-button-text` - Button text color
@@ -55,8 +61,16 @@ These variables can be used in your theme's CSS or page builder:
     color: var(--council-body-text);
 }
 
-h1, h2, h3 {
-    color: var(--council-heading);
+h1 {
+    color: var(--council-h1);
+}
+
+h2 {
+    color: var(--council-h2);
+}
+
+a {
+    color: var(--council-link);
 }
 
 button, .btn {
@@ -150,7 +164,9 @@ $logo_id = Council_Controller::get_council_logo_id();
   - `[council_info]` - Display name and logo together
 - **Color Management**: Configure site-wide color scheme
   - Primary, Secondary, and Tertiary brand colors
-  - Heading and Body text colors
+  - Individual heading colors (H1-H6)
+  - Link color
+  - Body text color
   - Button colors (background, text, hover states)
   - CSS variables output for page builder integration
 - **WordPress Settings API Integration**: Proper settings management using WordPress best practices
@@ -170,7 +186,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.4.0
+**Current Version:** 1.5.0
 
 ### Version Format
 
