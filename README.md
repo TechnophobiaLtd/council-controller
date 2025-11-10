@@ -55,12 +55,15 @@ Displays the council logo.
 - `size` - Image size: `thumbnail`, `medium`, `large`, or `full` (default: `full`)
 - `class` - Optional CSS class to add to the image
 - `link` - Whether to link to the home page: `yes` or `no` (default: `no`)
+- `aria_label` - ARIA label for accessibility. If not provided, uses the council name
 
 **Examples:**
 ```
 [council_logo]
 [council_logo size="medium"]
 [council_logo size="large" class="header-logo" link="yes"]
+[council_logo aria_label="City Council Logo"]
+[council_logo size="medium" aria_label="Official Council Emblem"]
 ```
 
 #### `[council_info]`

@@ -105,11 +105,17 @@ class Council_Controller {
                         'name'        => 'link',
                         'description' => __( 'Whether to link to the home page: yes or no (default: no)', 'council-controller' ),
                     ),
+                    array(
+                        'name'        => 'aria_label',
+                        'description' => __( 'ARIA label for accessibility. If not provided, uses the council name', 'council-controller' ),
+                    ),
                 ),
                 'examples'    => array(
                     '[council_logo]',
                     '[council_logo size="medium"]',
                     '[council_logo size="large" class="header-logo" link="yes"]',
+                    '[council_logo aria_label="City Council Logo"]',
+                    '[council_logo size="medium" aria_label="Official Council Emblem"]',
                 ),
             ),
             'council_info' => array(
@@ -514,13 +520,15 @@ class Council_Controller {
      * - size: thumbnail, medium, large, full (default: full)
      * - class: CSS class to add to the image
      * - link: yes/no - whether to link to the home page (default: no)
+     * - aria_label: ARIA label for accessibility (default: uses council name)
      */
     public function shortcode_council_logo( $atts ) {
         $atts = shortcode_atts(
             array(
-                'size'  => 'full',
-                'class' => '',
-                'link'  => 'no',
+                'size'       => 'full',
+                'class'      => '',
+                'link'       => 'no',
+                'aria_label' => '',
             ),
             $atts,
             'council_logo'
@@ -532,15 +540,26 @@ class Council_Controller {
             return '';
         }
         
+        // Determine aria-label: use provided value or default to council name
+        $aria_label = ! empty( $atts['aria_label'] ) ? $atts['aria_label'] : self::get_council_name();
+        
+        // Build image attributes
+        $image_attrs = array(
+            'class' => $atts['class'],
+            'alt'   => esc_attr( self::get_council_name() ),
+        );
+        
+        // Add aria-label if available
+        if ( ! empty( $aria_label ) ) {
+            $image_attrs['aria-label'] = esc_attr( $aria_label );
+        }
+        
         // Get the image at the specified size
         $image = wp_get_attachment_image(
             $logo_id,
             $atts['size'],
             false,
-            array(
-                'class' => $atts['class'],
-                'alt'   => esc_attr( self::get_council_name() ),
-            )
+            $image_attrs
         );
         
         if ( empty( $image ) ) {
@@ -549,7 +568,12 @@ class Council_Controller {
         
         // Optionally wrap in a link to home page
         if ( 'yes' === strtolower( $atts['link'] ) ) {
-            $image = '<a href="' . esc_url( home_url( '/' ) ) . '">' . $image . '</a>';
+            $link_attrs = '';
+            // Add aria-label to the link if provided
+            if ( ! empty( $aria_label ) ) {
+                $link_attrs = ' aria-label="' . esc_attr( $aria_label ) . '"';
+            }
+            $image = '<a href="' . esc_url( home_url( '/' ) ) . '"' . $link_attrs . '>' . $image . '</a>';
         }
         
         return $image;

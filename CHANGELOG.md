@@ -10,14 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - New `tag` parameter for `[council_name]` shortcode to control HTML wrapper tag (h1, h2, h3, h4, h5, h6, p, span, or div)
 - New `name_tag` parameter for `[council_info]` shortcode to control HTML tag for the council name
+- New `aria_label` parameter for `[council_logo]` shortcode to improve accessibility
 - Tag validation with secure fallback to default values
 - Examples for using different HTML tags in shortcode documentation
+- ARIA label support for better screen reader compatibility
 
 ### Changed
 - `[council_name]` shortcode now supports customizable HTML tags (default remains `span` for backward compatibility)
 - `[council_info]` shortcode now allows customization of the name heading tag (default remains `h2` for backward compatibility)
-- Updated shortcode documentation in admin interface with new tag parameters
-- Updated README.md with comprehensive examples of tag usage
+- `[council_logo]` shortcode now supports custom ARIA labels (defaults to council name for backward compatibility)
+- Updated shortcode documentation in admin interface with new tag and aria_label parameters
+- Updated README.md with comprehensive examples of tag and aria_label usage
+
+### Improved
+- Accessibility: ARIA labels can now be customized for logo images
+- Accessibility: Logo links also include ARIA labels when provided
 
 ## [1.1.0] - 2025-11-10
 
