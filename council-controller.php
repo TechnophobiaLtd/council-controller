@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.6.0
+ * Version: 1.7.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -82,12 +82,22 @@ class Council_Controller {
                         'name'        => 'class',
                         'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
                     ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the council name', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the council name', 'council-controller' ),
+                    ),
                 ),
                 'examples'    => array(
                     '[council_name]',
                     '[council_name tag="h1"]',
                     '[council_name tag="h2" class="my-council-name"]',
-                    '[council_name tag="p"]',
+                    '[council_name tag="h1" prepend="Welcome to"]',
+                    '[council_name prepend="Official Site of" tag="h2"]',
+                    '[council_name tag="p" append="- Official Website"]',
                 ),
             ),
             'council_logo' => array(
@@ -143,6 +153,14 @@ class Council_Controller {
                         'name'        => 'class',
                         'description' => __( 'Optional CSS class to add to the wrapper div', 'council-controller' ),
                     ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the council name', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the council name', 'council-controller' ),
+                    ),
                 ),
                 'examples'    => array(
                     '[council_info]',
@@ -150,7 +168,8 @@ class Council_Controller {
                     '[council_info show_logo="no"]',
                     '[council_info name_tag="h1"]',
                     '[council_info logo_size="thumbnail" class="sidebar-council"]',
-                    '[council_info name_tag="h3" logo_size="medium"]',
+                    '[council_info name_tag="h1" prepend="Welcome to"]',
+                    '[council_info prepend="Official Site of" logo_size="medium"]',
                 ),
             ),
         );
@@ -846,7 +865,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
             array( 'jquery', 'wp-color-picker' ),
-            '1.6.0',
+            '1.7.0',
             true
         );
         
@@ -865,7 +884,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.6.0'
+            '1.7.0'
         );
     }
     
@@ -1026,8 +1045,10 @@ class Council_Controller {
     public function shortcode_council_name( $atts ) {
         $atts = shortcode_atts(
             array(
-                'tag'   => 'span',
-                'class' => '',
+                'tag'     => 'span',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
             ),
             $atts,
             'council_name'
@@ -1048,7 +1069,17 @@ class Council_Controller {
         
         $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
         
-        return '<' . $tag . $class_attr . '>' . esc_html( $council_name ) . '</' . $tag . '>';
+        // Build the content with prepend and append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= esc_html( $council_name );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
     }
     
     /**
@@ -1137,6 +1168,8 @@ class Council_Controller {
                 'show_logo' => 'yes',
                 'name_tag'  => 'h2',
                 'class'     => '',
+                'prepend'   => '',
+                'append'    => '',
             ),
             $atts,
             'council_info'
@@ -1181,7 +1214,17 @@ class Council_Controller {
         
         // Show name if enabled and available
         if ( 'yes' === strtolower( $atts['show_name'] ) && ! empty( $council_name ) ) {
-            $output .= '<' . $name_tag . ' class="council-name">' . esc_html( $council_name ) . '</' . $name_tag . '>';
+            // Build the content with prepend and append
+            $name_content = '';
+            if ( ! empty( $atts['prepend'] ) ) {
+                $name_content .= esc_html( $atts['prepend'] ) . ' ';
+            }
+            $name_content .= esc_html( $council_name );
+            if ( ! empty( $atts['append'] ) ) {
+                $name_content .= ' ' . esc_html( $atts['append'] );
+            }
+            
+            $output .= '<' . $name_tag . ' class="council-name">' . $name_content . '</' . $name_tag . '>';
         }
         
         $output .= '</div>';

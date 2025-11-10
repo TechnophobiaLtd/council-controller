@@ -5,6 +5,25 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.0] - 2025-11-10
+
+### Added
+- **Prepend/Append Parameters**: New `prepend` and `append` parameters for text-based shortcodes
+  - `[council_name]` shortcode now supports `prepend` and `append` attributes
+  - `[council_info]` shortcode now supports `prepend` and `append` attributes for the name portion
+  - Enables custom text before/after council name (e.g., "Welcome to [Council Name]")
+- Enhanced shortcode documentation with prepend/append examples
+- Proper HTML escaping for prepend/append text
+
+### Changed
+- Updated shortcode examples to demonstrate prepend/append usage
+- Enhanced admin interface documentation with new parameter examples
+
+### Improved
+- Better flexibility for displaying council name in context
+- Support for custom headings with surrounding text
+- Maintains proper spacing between prepend/append text and council name
+
 ## [1.6.0] - 2025-11-10
 
 ### Added
@@ -162,6 +181,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct file access prevention via `ABSPATH` check
 - Proper handling of attachment URL false returns
 
+[1.7.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.7.0
 [1.6.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.6.0
 [1.5.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.5.0
 [1.4.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.4.0

@@ -99,13 +99,17 @@ Displays the council name.
 **Attributes:**
 - `tag` - HTML tag to wrap the name: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `span`)
 - `class` - Optional CSS class to add to the wrapper element
+- `prepend` - Text to add before the council name
+- `append` - Text to add after the council name
 
 **Examples:**
 ```
 [council_name]
 [council_name tag="h1"]
 [council_name tag="h2" class="my-council-name"]
-[council_name tag="p"]
+[council_name tag="h1" prepend="Welcome to"]
+[council_name prepend="Official Site of" tag="h2"]
+[council_name tag="p" append="- Official Website"]
 ```
 
 #### `[council_logo]`
@@ -135,6 +139,8 @@ Displays both council name and logo together in a formatted block.
 - `show_logo` - Show the logo: `yes` or `no` (default: `yes`)
 - `name_tag` - HTML tag to wrap the name: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `h2`)
 - `class` - Optional CSS class to add to the wrapper div
+- `prepend` - Text to add before the council name
+- `append` - Text to add after the council name
 
 **Examples:**
 ```
@@ -143,7 +149,8 @@ Displays both council name and logo together in a formatted block.
 [council_info show_logo="no"]
 [council_info name_tag="h1"]
 [council_info logo_size="thumbnail" class="sidebar-council"]
-[council_info name_tag="h3" logo_size="medium"]
+[council_info name_tag="h1" prepend="Welcome to"]
+[council_info prepend="Official Site of" logo_size="medium"]
 ```
 
 ### Accessing Settings Programmatically
@@ -192,7 +199,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.6.0
+**Current Version:** 1.7.0
 
 ### Version Format
 
