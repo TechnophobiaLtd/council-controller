@@ -5,6 +5,20 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-11-10
+
+### Added
+- Shortcodes documentation section in the WordPress admin interface
+- Complete reference for all three shortcodes ([council_name], [council_logo], [council_info]) with their attributes and examples
+- Improved admin UI styling for shortcode reference section
+- Dynamic shortcode documentation registry system that automatically updates when new shortcodes are added
+- WordPress filter `council_controller_shortcode_docs` for extending shortcode documentation
+
+### Changed
+- Enhanced settings page to include regularly updated list of available shortcodes and parameters
+- Users no longer need to refer to external documentation to understand how to use shortcodes
+- Shortcode documentation is now centralized in `init_shortcode_docs()` method for easier maintenance
+
 ## [1.0.0] - 2025-11-05
 
 ### Added
@@ -35,4 +49,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct file access prevention via `ABSPATH` check
 - Proper handling of attachment URL false returns
 
+[1.1.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.1.0
 [1.0.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.0.0
