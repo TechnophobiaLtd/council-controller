@@ -7,6 +7,8 @@ A Must-Use WordPress plugin intended for use on a template parish or town counci
 Council Controller provides a simple admin interface to manage your council's basic information, including:
 - Council Name
 - Council Logo (uploaded via WordPress Media Library)
+- Color Scheme (Primary, Secondary, Tertiary, Heading, and Body colors)
+- CSS Variables for use with page builders and themes
 
 This information can be accessed programmatically and displayed on your website using shortcodes.
 
@@ -27,7 +29,32 @@ The plugin will be automatically activated - no need to activate it through the 
 2. Navigate to **Council Settings** in the admin menu
 3. Enter your council name
 4. Click "Choose Logo" to select or upload a logo from the media library
-5. Click "Save Settings"
+5. Configure your color scheme using the color pickers
+6. Click "Save Settings"
+
+### Color Management & CSS Variables
+
+The plugin provides a color management system that outputs CSS variables for use with page builders and themes:
+
+**Available CSS Variables:**
+- `--council-primary` - Primary brand color
+- `--council-secondary` - Secondary brand color
+- `--council-tertiary` - Tertiary brand color
+- `--council-heading` - Default heading color
+- `--council-body-text` - Default body text color
+
+These variables can be used in your theme's CSS or page builder:
+
+```css
+.my-element {
+    background-color: var(--council-primary);
+    color: var(--council-body-text);
+}
+
+h1, h2, h3 {
+    color: var(--council-heading);
+}
+```
 
 ### Using Shortcodes
 
@@ -104,14 +131,20 @@ $logo_id = Council_Controller::get_council_logo_id();
 ## Features
 
 - **Shortcodes**: Three shortcodes to display council information anywhere on your site
-  - `[council_name]` - Display council name
-  - `[council_logo]` - Display council logo with customizable size and styling
+  - `[council_name]` - Display council name with customizable HTML tags
+  - `[council_logo]` - Display council logo with customizable size, styling, and ARIA labels
   - `[council_info]` - Display name and logo together
+- **Color Management**: Configure site-wide color scheme
+  - Primary, Secondary, and Tertiary brand colors
+  - Heading and Body text colors
+  - CSS variables output for page builder integration
 - **WordPress Settings API Integration**: Proper settings management using WordPress best practices
 - **Media Library Integration**: Easy logo selection using the native WordPress media uploader
+- **Color Picker Integration**: User-friendly color selection with WordPress color picker
 - **Sanitization & Security**: All inputs are properly sanitized and escaped
 - **Translation Ready**: All strings are internationalized and ready for translation
 - **Clean UI**: Simple, intuitive admin interface following WordPress design patterns
+- **Accessibility**: ARIA label support for improved screen reader compatibility
 
 ## Requirements
 
@@ -122,7 +155,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.2.0
+**Current Version:** 1.3.0
 
 ### Version Format
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -58,6 +58,7 @@ class Council_Controller {
         add_action( 'admin_init', array( $this, 'register_settings' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
         add_action( 'init', array( $this, 'register_shortcodes' ) );
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
     }
     
     /**
@@ -210,6 +211,54 @@ class Council_Controller {
             'council_controller_main_section'
         );
         
+        // Color Management Section
+        add_settings_section(
+            'council_controller_colors_section',
+            __( 'Color Management', 'council-controller' ),
+            array( $this, 'render_colors_section_description' ),
+            'council-settings'
+        );
+        
+        add_settings_field(
+            'primary_color',
+            __( 'Primary Color', 'council-controller' ),
+            array( $this, 'render_primary_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'secondary_color',
+            __( 'Secondary Color', 'council-controller' ),
+            array( $this, 'render_secondary_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'tertiary_color',
+            __( 'Tertiary Color', 'council-controller' ),
+            array( $this, 'render_tertiary_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'heading_color',
+            __( 'Heading Color', 'council-controller' ),
+            array( $this, 'render_heading_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'body_color',
+            __( 'Body Text Color', 'council-controller' ),
+            array( $this, 'render_body_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
         add_settings_section(
             'council_controller_shortcodes_section',
             __( 'Available Shortcodes', 'council-controller' ),
@@ -230,6 +279,14 @@ class Council_Controller {
         
         if ( isset( $input['council_logo'] ) ) {
             $sanitized['council_logo'] = absint( $input['council_logo'] );
+        }
+        
+        // Sanitize color fields
+        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'heading_color', 'body_color' );
+        foreach ( $color_fields as $field ) {
+            if ( isset( $input[ $field ] ) ) {
+                $sanitized[ $field ] = sanitize_hex_color( $input[ $field ] );
+            }
         }
         
         return $sanitized;
@@ -371,6 +428,108 @@ class Council_Controller {
     }
     
     /**
+     * Render colors section description
+     */
+    public function render_colors_section_description() {
+        echo '<p>' . esc_html__( 'Configure color scheme for your website. These colors will be available as CSS variables that page builders and themes can use.', 'council-controller' ) . '</p>';
+    }
+    
+    /**
+     * Render primary color field
+     */
+    public function render_primary_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $primary_color = isset( $options['primary_color'] ) ? $options['primary_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[primary_color]" 
+               id="primary_color" 
+               value="<?php echo esc_attr( $primary_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Primary brand color. Available as CSS variable: --council-primary', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render secondary color field
+     */
+    public function render_secondary_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $secondary_color = isset( $options['secondary_color'] ) ? $options['secondary_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[secondary_color]" 
+               id="secondary_color" 
+               value="<?php echo esc_attr( $secondary_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Secondary brand color. Available as CSS variable: --council-secondary', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render tertiary color field
+     */
+    public function render_tertiary_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $tertiary_color = isset( $options['tertiary_color'] ) ? $options['tertiary_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[tertiary_color]" 
+               id="tertiary_color" 
+               value="<?php echo esc_attr( $tertiary_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Tertiary brand color. Available as CSS variable: --council-tertiary', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render heading color field
+     */
+    public function render_heading_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $heading_color = isset( $options['heading_color'] ) ? $options['heading_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[heading_color]" 
+               id="heading_color" 
+               value="<?php echo esc_attr( $heading_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Default heading color. Available as CSS variable: --council-heading', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render body color field
+     */
+    public function render_body_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $body_color = isset( $options['body_color'] ) ? $options['body_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[body_color]" 
+               id="body_color" 
+               value="<?php echo esc_attr( $body_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Default body text color. Available as CSS variable: --council-body-text', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
      * Enqueue admin scripts
      */
     public function enqueue_admin_scripts( $hook ) {
@@ -382,12 +541,15 @@ class Council_Controller {
         // Enqueue WordPress media scripts
         wp_enqueue_media();
         
+        // Enqueue WordPress color picker
+        wp_enqueue_style( 'wp-color-picker' );
+        
         // Enqueue our custom script
         wp_enqueue_script(
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
-            array( 'jquery' ),
-            '1.2.0',
+            array( 'jquery', 'wp-color-picker' ),
+            '1.3.0',
             true
         );
         
@@ -406,7 +568,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.2.0'
+            '1.3.0'
         );
     }
     
@@ -433,6 +595,42 @@ class Council_Controller {
             </form>
         </div>
         <?php
+    }
+    
+    /**
+     * Enqueue frontend styles with CSS variables
+     */
+    public function enqueue_frontend_styles() {
+        $options = get_option( self::OPTION_NAME, array() );
+        
+        // Build CSS variables
+        $css_vars = array();
+        
+        if ( ! empty( $options['primary_color'] ) ) {
+            $css_vars[] = '--council-primary: ' . esc_attr( $options['primary_color'] );
+        }
+        
+        if ( ! empty( $options['secondary_color'] ) ) {
+            $css_vars[] = '--council-secondary: ' . esc_attr( $options['secondary_color'] );
+        }
+        
+        if ( ! empty( $options['tertiary_color'] ) ) {
+            $css_vars[] = '--council-tertiary: ' . esc_attr( $options['tertiary_color'] );
+        }
+        
+        if ( ! empty( $options['heading_color'] ) ) {
+            $css_vars[] = '--council-heading: ' . esc_attr( $options['heading_color'] );
+        }
+        
+        if ( ! empty( $options['body_color'] ) ) {
+            $css_vars[] = '--council-body-text: ' . esc_attr( $options['body_color'] );
+        }
+        
+        // Only output if we have colors defined
+        if ( ! empty( $css_vars ) ) {
+            $custom_css = ':root { ' . implode( '; ', $css_vars ) . '; }';
+            wp_add_inline_style( 'wp-block-library', $custom_css );
+        }
     }
     
     /**

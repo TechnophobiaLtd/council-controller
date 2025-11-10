@@ -9,6 +9,13 @@
         var mediaUploader;
         
         /**
+         * Initialize WordPress Color Picker
+         */
+        if ($.fn.wpColorPicker) {
+            $('.council-color-picker').wpColorPicker();
+        }
+        
+        /**
          * Handle logo upload
          */
         $('.council-upload-logo-button').on('click', function(e) {

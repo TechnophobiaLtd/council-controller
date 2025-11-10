@@ -5,6 +5,29 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2025-11-10
+
+### Added
+- **Color Management System**: Configure site-wide color scheme from admin interface
+  - Primary color setting with CSS variable `--council-primary`
+  - Secondary color setting with CSS variable `--council-secondary`
+  - Tertiary color setting with CSS variable `--council-tertiary`
+  - Heading color setting with CSS variable `--council-heading`
+  - Body text color setting with CSS variable `--council-body-text`
+- WordPress Color Picker integration for all color fields
+- Frontend CSS variable output for page builder and theme integration
+- Color sanitization using `sanitize_hex_color()`
+
+### Changed
+- Admin interface now includes Color Management section
+- Enhanced admin JavaScript to initialize color pickers
+- CSS variables automatically injected into frontend when colors are configured
+
+### Improved
+- Page builder compatibility through CSS variable system
+- Theme customization capabilities
+- Centralized color management for consistent branding
+
 ## [1.2.0] - 2025-11-10
 
 ### Added
@@ -70,6 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct file access prevention via `ABSPATH` check
 - Proper handling of attachment URL false returns
 
+[1.3.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.3.0
 [1.2.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.2.0
 [1.1.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.1.0
 [1.0.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.0.0
