@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.8.0
+ * Version: 1.8.1
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -950,8 +950,8 @@ class Council_Controller {
         wp_enqueue_script(
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
-            array( 'jquery', 'wp-color-picker' ),
-            '1.7.0',
+            array( 'jquery', 'wp-color-picker', 'media-upload', 'media-views' ),
+            '1.8.1',
             true
         );
         
@@ -970,7 +970,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.7.0'
+            '1.8.1'
         );
     }
     
