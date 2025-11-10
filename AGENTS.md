@@ -89,6 +89,43 @@ The plugin provides three shortcodes for displaying council information:
 3. **`[council_info]`** - Displays both name and logo
    - Attributes: `logo_size`, `show_name` (yes/no), `show_logo` (yes/no), `class`
 
+**Shortcode Documentation System:**
+
+The plugin includes a dynamic shortcode documentation system that automatically updates the WordPress admin interface when new shortcodes are added. Documentation is centralized in the `init_shortcode_docs()` method.
+
+To add a new shortcode with automatic documentation:
+
+1. Add the shortcode documentation to `init_shortcode_docs()` in the `$this->shortcode_docs` array
+2. Register the shortcode in `register_shortcodes()` method
+3. Create the shortcode handler method (e.g., `shortcode_new_field()`)
+
+The documentation will automatically appear in the admin interface under "Available Shortcodes" section.
+
+**Extensibility Filter:**
+
+Plugins and themes can add their own shortcode documentation using the `council_controller_shortcode_docs` filter:
+
+```php
+add_filter( 'council_controller_shortcode_docs', function( $docs ) {
+    $docs['my_shortcode'] = array(
+        'tag'         => 'my_shortcode',
+        'description' => 'Description of the shortcode',
+        'attributes'  => array(
+            array(
+                'name'        => 'attribute_name',
+                'description' => 'Attribute description',
+            ),
+        ),
+        'examples'    => array(
+            '[my_shortcode]',
+            '[my_shortcode attribute_name="value"]',
+        ),
+    );
+    return $docs;
+} );
+```
+
+
 ### Internal Methods
 
 - `add_admin_menu()` - Registers the admin menu page
@@ -155,7 +192,11 @@ council-controller/
 3. Follow existing naming conventions
 4. Add settings fields via `register_settings()` and `add_settings_field()`
 5. Create corresponding sanitization in `sanitize_settings()`
-6. For new shortcodes, register them in `register_shortcodes()` and create handler methods
+6. For new shortcodes:
+   - Add documentation to `init_shortcode_docs()` method
+   - Register shortcode in `register_shortcodes()` method
+   - Create handler method (e.g., `shortcode_new_field()`)
+   - Documentation will automatically appear in admin interface
 7. Update version number according to Semantic Versioning
 8. Document changes in CHANGELOG.md and README.md
 
@@ -189,13 +230,34 @@ Admin styles are in `assets/css/admin.css` and are only loaded on the settings p
 
 ### Adding a New Shortcode
 
-1. Register shortcode in `register_shortcodes()` using `add_shortcode()`
-2. Create handler method (e.g., `shortcode_new_shortcode()`)
-3. Use `shortcode_atts()` to define and parse attributes
-4. Properly escape all output using `esc_html()`, `esc_attr()`, `esc_url()`
-5. Return empty string if content is not available
-6. Document the shortcode in README.md with examples
-7. Update CHANGELOG.md
+**Important:** The plugin uses a dynamic documentation system. When adding a shortcode, its documentation will automatically appear in the WordPress admin interface.
+
+1. Add shortcode documentation to `init_shortcode_docs()` method with this structure:
+   ```php
+   'shortcode_tag' => array(
+       'tag'         => 'shortcode_tag',
+       'description' => __( 'Description', 'council-controller' ),
+       'attributes'  => array(
+           array(
+               'name'        => 'attribute_name',
+               'description' => __( 'Attribute description', 'council-controller' ),
+           ),
+       ),
+       'examples'    => array(
+           '[shortcode_tag]',
+           '[shortcode_tag attribute="value"]',
+       ),
+   ),
+   ```
+2. Register shortcode in `register_shortcodes()` using `add_shortcode()`
+3. Create handler method (e.g., `shortcode_new_shortcode()`)
+4. Use `shortcode_atts()` to define and parse attributes
+5. Properly escape all output using `esc_html()`, `esc_attr()`, `esc_url()`
+6. Return empty string if content is not available
+7. Update README.md with examples (optional, since it's now in admin)
+8. Update CHANGELOG.md
+
+The documentation will automatically render in the "Available Shortcodes" section of the admin interface.
 
 ## Security Considerations for Agents
 
