@@ -5,6 +5,21 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.2] - 2025-11-10
+
+### Added
+- **Global Helper Functions for Page Builders**: Direct PHP access functions without `do_shortcode()`
+  - `council_controller_get_hero_image_url( $size )` - Get hero image URL
+  - `council_controller_get_council_name()` - Get council name
+  - `council_controller_get_logo_url( $size )` - Get logo URL
+  - Compatible with Elementor Dynamic Tags, Beaver Builder PHP fields, Divi Dynamic Content
+  - Simplified syntax: `$hero_url = council_controller_get_hero_image_url();`
+  - No need for `do_shortcode()` or `trim()` - returns clean values ready to use
+
+### Changed
+- Enhanced documentation with page builder integration examples
+- Improved function naming for better discoverability
+
 ## [1.8.1] - 2025-11-10
 
 ### Fixed

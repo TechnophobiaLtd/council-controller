@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.8.1
+ * Version: 1.8.2
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -1385,3 +1385,73 @@ class Council_Controller {
 
 // Initialize the plugin
 add_action( 'plugins_loaded', array( 'Council_Controller', 'get_instance' ) );
+
+/**
+ * Global helper function for page builders to get council hero image URL
+ * 
+ * This function provides a simple way for page builders (like Elementor, Beaver Builder, etc.)
+ * to access the hero image URL directly in PHP without using do_shortcode().
+ * 
+ * Usage in page builders:
+ * - Elementor: Dynamic Tags > PHP > Return Value
+ * - Beaver Builder: PHP field
+ * - Divi: Dynamic Content
+ * 
+ * Example:
+ * <?php
+ * $hero_url = council_controller_get_hero_image_url();
+ * if ( ! empty( $hero_url ) ) {
+ *     echo '<div style="background-image: url(' . esc_url( $hero_url ) . ');">';
+ *     // Your content
+ *     echo '</div>';
+ * }
+ * ?>
+ * 
+ * @param string $size Image size (thumbnail, medium, large, full). Default: 'full'
+ * @return string Hero image URL or empty string if not set
+ * @since 1.8.2
+ */
+function council_controller_get_hero_image_url( $size = 'full' ) {
+    return Council_Controller::get_hero_image_url( $size );
+}
+
+/**
+ * Global helper function for page builders to get council name
+ * 
+ * This function provides a simple way for page builders to access the council name
+ * directly in PHP without using do_shortcode().
+ * 
+ * Example:
+ * <?php
+ * $council_name = council_controller_get_council_name();
+ * echo '<h1>Welcome to ' . esc_html( $council_name ) . '</h1>';
+ * ?>
+ * 
+ * @return string Council name or empty string if not set
+ * @since 1.8.2
+ */
+function council_controller_get_council_name() {
+    return Council_Controller::get_council_name();
+}
+
+/**
+ * Global helper function for page builders to get council logo URL
+ * 
+ * This function provides a simple way for page builders to access the logo URL
+ * directly in PHP without using do_shortcode().
+ * 
+ * Example:
+ * <?php
+ * $logo_url = council_controller_get_logo_url( 'medium' );
+ * if ( ! empty( $logo_url ) ) {
+ *     echo '<img src="' . esc_url( $logo_url ) . '" alt="Council Logo">';
+ * }
+ * ?>
+ * 
+ * @param string $size Image size (thumbnail, medium, large, full). Default: 'full'
+ * @return string Logo URL or empty string if not set
+ * @since 1.8.2
+ */
+function council_controller_get_logo_url( $size = 'full' ) {
+    return Council_Controller::get_council_logo_url( $size );
+}

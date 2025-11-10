@@ -183,6 +183,21 @@ if (!empty($image_url)) {
 ?>
 ```
 
+**Better: Using Global Helper Function (Recommended for Page Builders):**
+```php
+<?php
+// Direct access - no do_shortcode() needed
+$hero_url = council_controller_get_hero_image_url();
+
+// Use directly in page builder PHP fields (Elementor, Beaver Builder, etc.)
+if (!empty($hero_url)) {
+    echo '<div style="background-image: url(' . esc_url($hero_url) . ');">';
+    // Your content
+    echo '</div>';
+}
+?>
+```
+
 **Usage in custom CSS:**
 ```php
 <?php if ($hero_url = do_shortcode('[council_hero_image size="full"]')): ?>
@@ -195,6 +210,48 @@ if (!empty($image_url)) {
 </style>
 <?php endif; ?>
 ```
+
+### Global Helper Functions for Page Builders
+
+For easier integration with page builders (Elementor, Beaver Builder, Divi, etc.), the plugin provides direct PHP functions that don't require `do_shortcode()`:
+
+```php
+// Get hero image URL (returns clean URL string)
+$hero_url = council_controller_get_hero_image_url();           // Full size
+$hero_url = council_controller_get_hero_image_url('large');    // Large size
+$hero_url = council_controller_get_hero_image_url('medium');   // Medium size
+
+// Get council name (returns string)
+$council_name = council_controller_get_council_name();
+
+// Get council logo URL (returns clean URL string)
+$logo_url = council_controller_get_logo_url();                // Full size
+$logo_url = council_controller_get_logo_url('medium');        // Medium size
+```
+
+**Page Builder Integration Examples:**
+
+*Elementor (Dynamic Tags > PHP > Return Value):*
+```php
+return council_controller_get_hero_image_url();
+```
+
+*Beaver Builder (PHP field):*
+```php
+$hero_url = council_controller_get_hero_image_url();
+```
+
+*Divi (Dynamic Content):*
+```php
+<?php echo council_controller_get_hero_image_url(); ?>
+```
+
+**Benefits:**
+- No `do_shortcode()` overhead
+- No `trim()` needed - returns clean values
+- Simpler, more readable code
+- Direct access to data
+- Type-safe (always returns string)
 
 ### Accessing Settings Programmatically
 
