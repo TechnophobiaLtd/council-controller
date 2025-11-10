@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.5.0
+ * Version: 1.6.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -300,6 +300,14 @@ class Council_Controller {
         );
         
         add_settings_field(
+            'menu_link_color',
+            __( 'Menu Link Color', 'council-controller' ),
+            array( $this, 'render_menu_link_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
             'body_color',
             __( 'Body Text Color', 'council-controller' ),
             array( $this, 'render_body_color_field' ),
@@ -362,7 +370,7 @@ class Council_Controller {
         }
         
         // Sanitize color fields
-        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'h1_color', 'h2_color', 'h3_color', 'h4_color', 'h5_color', 'h6_color', 'link_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
+        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'h1_color', 'h2_color', 'h3_color', 'h4_color', 'h5_color', 'h6_color', 'link_color', 'menu_link_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
         foreach ( $color_fields as $field ) {
             if ( isset( $input[ $field ] ) ) {
                 $sanitized[ $field ] = sanitize_hex_color( $input[ $field ] );
@@ -705,6 +713,25 @@ class Council_Controller {
     }
     
     /**
+     * Render menu link color field
+     */
+    public function render_menu_link_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $menu_link_color = isset( $options['menu_link_color'] ) ? $options['menu_link_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[menu_link_color]" 
+               id="menu_link_color" 
+               value="<?php echo esc_attr( $menu_link_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Menu link color. Available as CSS variable: --council-menu-link', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
      * Render body color field
      */
     public function render_body_color_field() {
@@ -819,7 +846,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
             array( 'jquery', 'wp-color-picker' ),
-            '1.5.0',
+            '1.6.0',
             true
         );
         
@@ -838,7 +865,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.5.0'
+            '1.6.0'
         );
     }
     
@@ -914,6 +941,10 @@ class Council_Controller {
         
         if ( ! empty( $options['link_color'] ) ) {
             $css_vars[] = '--council-link: ' . esc_attr( $options['link_color'] );
+        }
+        
+        if ( ! empty( $options['menu_link_color'] ) ) {
+            $css_vars[] = '--council-menu-link: ' . esc_attr( $options['menu_link_color'] );
         }
         
         if ( ! empty( $options['body_color'] ) ) {

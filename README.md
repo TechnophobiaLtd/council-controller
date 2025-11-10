@@ -47,6 +47,7 @@ The plugin provides a color management system that outputs CSS variables for use
 - `--council-h5` - H5 heading color
 - `--council-h6` - H6 heading color
 - `--council-link` - Link color
+- `--council-menu-link` - Menu link color
 - `--council-body-text` - Default body text color
 - `--council-button` - Button background color
 - `--council-button-text` - Button text color
@@ -71,6 +72,10 @@ h2 {
 
 a {
     color: var(--council-link);
+}
+
+nav a, .menu a {
+    color: var(--council-menu-link);
 }
 
 button, .btn {
@@ -166,6 +171,7 @@ $logo_id = Council_Controller::get_council_logo_id();
   - Primary, Secondary, and Tertiary brand colors
   - Individual heading colors (H1-H6)
   - Link color
+  - Menu link color
   - Body text color
   - Button colors (background, text, hover states)
   - CSS variables output for page builder integration
@@ -186,7 +192,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.5.0
+**Current Version:** 1.6.0
 
 ### Version Format
 

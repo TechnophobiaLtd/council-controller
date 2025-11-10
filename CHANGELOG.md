@@ -5,6 +5,24 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2025-11-10
+
+### Added
+- **Menu Link Color**: New menu link color field with CSS variable `--council-menu-link`
+- WordPress Color Picker integration for menu link field
+- Frontend CSS variable output for menu link color
+- Separate styling control for menu links vs. content links
+
+### Changed
+- Admin interface now includes 16 total color fields (3 base + 6 headings + 2 links + 1 body + 4 button)
+- Enhanced color management section with menu link control
+- Updated documentation with menu link color examples
+
+### Improved
+- Better navigation styling capabilities
+- Separate menu and content link customization
+- Improved flexibility for site-wide link styling
+
 ## [1.5.0] - 2025-11-10
 
 ### Added
@@ -144,6 +162,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct file access prevention via `ABSPATH` check
 - Proper handling of attachment URL false returns
 
+[1.6.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.6.0
 [1.5.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.5.0
 [1.4.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.4.0
 [1.3.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.3.0
