@@ -31,7 +31,7 @@ The plugin will be automatically activated - no need to activate it through the 
 
 ### Using Shortcodes
 
-The plugin provides three shortcodes to display council information on your website:
+The plugin provides three shortcodes to display council information on your website. **Complete documentation with examples is available within the WordPress admin interface on the Council Settings page.**
 
 #### `[council_name]`
 Displays the council name.
@@ -113,7 +113,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.0.0
+**Current Version:** 1.1.0
 
 ### Version Format
 

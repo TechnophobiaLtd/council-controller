@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -99,6 +99,13 @@ class Council_Controller {
             'council-settings',
             'council_controller_main_section'
         );
+        
+        add_settings_section(
+            'council_controller_shortcodes_section',
+            __( 'Available Shortcodes', 'council-controller' ),
+            array( $this, 'render_shortcodes_section' ),
+            'council-settings'
+        );
     }
     
     /**
@@ -123,6 +130,81 @@ class Council_Controller {
      */
     public function render_section_description() {
         echo '<p>' . esc_html__( 'Configure your council information below.', 'council-controller' ) . '</p>';
+    }
+    
+    /**
+     * Render shortcodes section
+     */
+    public function render_shortcodes_section() {
+        ?>
+        <p><?php esc_html_e( 'Use these shortcodes to display council information on your website:', 'council-controller' ); ?></p>
+        
+        <div class="council-shortcodes-reference">
+            
+            <div class="shortcode-item">
+                <h3 class="shortcode-title"><code>[council_name]</code></h3>
+                <p class="shortcode-description"><?php esc_html_e( 'Displays the council name.', 'council-controller' ); ?></p>
+                <div class="shortcode-attributes">
+                    <strong><?php esc_html_e( 'Attributes:', 'council-controller' ); ?></strong>
+                    <ul>
+                        <li><code>class</code> - <?php esc_html_e( 'Optional CSS class to add to the wrapper span', 'council-controller' ); ?></li>
+                    </ul>
+                </div>
+                <div class="shortcode-examples">
+                    <strong><?php esc_html_e( 'Examples:', 'council-controller' ); ?></strong>
+                    <ul>
+                        <li><code>[council_name]</code></li>
+                        <li><code>[council_name class="my-council-name"]</code></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="shortcode-item">
+                <h3 class="shortcode-title"><code>[council_logo]</code></h3>
+                <p class="shortcode-description"><?php esc_html_e( 'Displays the council logo.', 'council-controller' ); ?></p>
+                <div class="shortcode-attributes">
+                    <strong><?php esc_html_e( 'Attributes:', 'council-controller' ); ?></strong>
+                    <ul>
+                        <li><code>size</code> - <?php esc_html_e( 'Image size: thumbnail, medium, large, or full (default: full)', 'council-controller' ); ?></li>
+                        <li><code>class</code> - <?php esc_html_e( 'Optional CSS class to add to the image', 'council-controller' ); ?></li>
+                        <li><code>link</code> - <?php esc_html_e( 'Whether to link to the home page: yes or no (default: no)', 'council-controller' ); ?></li>
+                    </ul>
+                </div>
+                <div class="shortcode-examples">
+                    <strong><?php esc_html_e( 'Examples:', 'council-controller' ); ?></strong>
+                    <ul>
+                        <li><code>[council_logo]</code></li>
+                        <li><code>[council_logo size="medium"]</code></li>
+                        <li><code>[council_logo size="large" class="header-logo" link="yes"]</code></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="shortcode-item">
+                <h3 class="shortcode-title"><code>[council_info]</code></h3>
+                <p class="shortcode-description"><?php esc_html_e( 'Displays both council name and logo together in a formatted block.', 'council-controller' ); ?></p>
+                <div class="shortcode-attributes">
+                    <strong><?php esc_html_e( 'Attributes:', 'council-controller' ); ?></strong>
+                    <ul>
+                        <li><code>logo_size</code> - <?php esc_html_e( 'Logo image size: thumbnail, medium, large, or full (default: medium)', 'council-controller' ); ?></li>
+                        <li><code>show_name</code> - <?php esc_html_e( 'Show the name: yes or no (default: yes)', 'council-controller' ); ?></li>
+                        <li><code>show_logo</code> - <?php esc_html_e( 'Show the logo: yes or no (default: yes)', 'council-controller' ); ?></li>
+                        <li><code>class</code> - <?php esc_html_e( 'Optional CSS class to add to the wrapper div', 'council-controller' ); ?></li>
+                    </ul>
+                </div>
+                <div class="shortcode-examples">
+                    <strong><?php esc_html_e( 'Examples:', 'council-controller' ); ?></strong>
+                    <ul>
+                        <li><code>[council_info]</code></li>
+                        <li><code>[council_info logo_size="large"]</code></li>
+                        <li><code>[council_info show_logo="no"]</code></li>
+                        <li><code>[council_info logo_size="thumbnail" class="sidebar-council"]</code></li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+        <?php
     }
     
     /**
@@ -219,7 +301,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
             array( 'jquery' ),
-            '1.0.0',
+            '1.1.0',
             true
         );
         
@@ -238,7 +320,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.0.0'
+            '1.1.0'
         );
     }
     
