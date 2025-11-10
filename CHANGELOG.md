@@ -5,6 +5,20 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2025-11-10
+
+### Added
+- New `tag` parameter for `[council_name]` shortcode to control HTML wrapper tag (h1, h2, h3, h4, h5, h6, p, span, or div)
+- New `name_tag` parameter for `[council_info]` shortcode to control HTML tag for the council name
+- Tag validation with secure fallback to default values
+- Examples for using different HTML tags in shortcode documentation
+
+### Changed
+- `[council_name]` shortcode now supports customizable HTML tags (default remains `span` for backward compatibility)
+- `[council_info]` shortcode now allows customization of the name heading tag (default remains `h2` for backward compatibility)
+- Updated shortcode documentation in admin interface with new tag parameters
+- Updated README.md with comprehensive examples of tag usage
+
 ## [1.1.0] - 2025-11-10
 
 ### Added
@@ -49,5 +63,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct file access prevention via `ABSPATH` check
 - Proper handling of attachment URL false returns
 
+[1.2.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.2.0
 [1.1.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.1.0
 [1.0.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.0.0

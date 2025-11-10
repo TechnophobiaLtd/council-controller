@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -74,13 +74,19 @@ class Council_Controller {
                 'description' => __( 'Displays the council name.', 'council-controller' ),
                 'attributes'  => array(
                     array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the name: h1, h2, h3, h4, h5, h6, p, span, or div (default: span)', 'council-controller' ),
+                    ),
+                    array(
                         'name'        => 'class',
-                        'description' => __( 'Optional CSS class to add to the wrapper span', 'council-controller' ),
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
                     ),
                 ),
                 'examples'    => array(
                     '[council_name]',
-                    '[council_name class="my-council-name"]',
+                    '[council_name tag="h1"]',
+                    '[council_name tag="h2" class="my-council-name"]',
+                    '[council_name tag="p"]',
                 ),
             ),
             'council_logo' => array(
@@ -123,6 +129,10 @@ class Council_Controller {
                         'description' => __( 'Show the logo: yes or no (default: yes)', 'council-controller' ),
                     ),
                     array(
+                        'name'        => 'name_tag',
+                        'description' => __( 'HTML tag to wrap the name: h1, h2, h3, h4, h5, h6, p, span, or div (default: h2)', 'council-controller' ),
+                    ),
+                    array(
                         'name'        => 'class',
                         'description' => __( 'Optional CSS class to add to the wrapper div', 'council-controller' ),
                     ),
@@ -131,7 +141,9 @@ class Council_Controller {
                     '[council_info]',
                     '[council_info logo_size="large"]',
                     '[council_info show_logo="no"]',
+                    '[council_info name_tag="h1"]',
                     '[council_info logo_size="thumbnail" class="sidebar-council"]',
+                    '[council_info name_tag="h3" logo_size="medium"]',
                 ),
             ),
         );
@@ -369,7 +381,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
             array( 'jquery' ),
-            '1.1.0',
+            '1.2.0',
             true
         );
         
@@ -388,7 +400,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.1.0'
+            '1.2.0'
         );
     }
     
@@ -461,10 +473,15 @@ class Council_Controller {
     /**
      * Shortcode: [council_name]
      * Displays the council name
+     * 
+     * Attributes:
+     * - tag: HTML tag to wrap the name (default: span)
+     * - class: CSS class to add to the wrapper
      */
     public function shortcode_council_name( $atts ) {
         $atts = shortcode_atts(
             array(
+                'tag'   => 'span',
                 'class' => '',
             ),
             $atts,
@@ -477,9 +494,16 @@ class Council_Controller {
             return '';
         }
         
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span'; // Default fallback
+        }
+        
         $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
         
-        return '<span' . $class_attr . '>' . esc_html( $council_name ) . '</span>';
+        return '<' . $tag . $class_attr . '>' . esc_html( $council_name ) . '</' . $tag . '>';
     }
     
     /**
@@ -539,6 +563,7 @@ class Council_Controller {
      * - logo_size: thumbnail, medium, large, full (default: medium)
      * - show_name: yes/no - whether to show the name (default: yes)
      * - show_logo: yes/no - whether to show the logo (default: yes)
+     * - name_tag: HTML tag to wrap the name (default: h2)
      * - class: CSS class to add to the wrapper div
      */
     public function shortcode_council_info( $atts ) {
@@ -547,6 +572,7 @@ class Council_Controller {
                 'logo_size' => 'medium',
                 'show_name' => 'yes',
                 'show_logo' => 'yes',
+                'name_tag'  => 'h2',
                 'class'     => '',
             ),
             $atts,
@@ -561,6 +587,13 @@ class Council_Controller {
         if ( ( 'no' === strtolower( $atts['show_name'] ) || empty( $council_name ) ) &&
              ( 'no' === strtolower( $atts['show_logo'] ) || empty( $logo_id ) ) ) {
             return '';
+        }
+        
+        // Validate and sanitize the name_tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $name_tag = strtolower( trim( $atts['name_tag'] ) );
+        if ( ! in_array( $name_tag, $allowed_tags, true ) ) {
+            $name_tag = 'h2'; // Default fallback
         }
         
         $class_attr = ! empty( $atts['class'] ) ? ' class="council-info ' . esc_attr( $atts['class'] ) . '"' : ' class="council-info"';
@@ -585,7 +618,7 @@ class Council_Controller {
         
         // Show name if enabled and available
         if ( 'yes' === strtolower( $atts['show_name'] ) && ! empty( $council_name ) ) {
-            $output .= '<h2 class="council-name">' . esc_html( $council_name ) . '</h2>';
+            $output .= '<' . $name_tag . ' class="council-name">' . esc_html( $council_name ) . '</' . $name_tag . '>';
         }
         
         $output .= '</div>';
