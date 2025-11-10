@@ -91,7 +91,7 @@ button:hover, .btn:hover {
 
 ### Using Shortcodes
 
-The plugin provides three shortcodes to display council information on your website. **Complete documentation with examples is available within the WordPress admin interface on the Council Settings page.**
+The plugin provides four shortcodes to display council information on your website. **Complete documentation with examples is available within the WordPress admin interface on the Council Settings page.**
 
 #### `[council_name]`
 Displays the council name.
@@ -153,6 +153,49 @@ Displays both council name and logo together in a formatted block.
 [council_info prepend="Official Site of" logo_size="medium"]
 ```
 
+#### `[council_hero_image]`
+Returns the URL of the hero image with no HTML markup. Perfect for use in CSS background-image properties or PHP background styles.
+
+**Attributes:**
+- `size` - Image size: `thumbnail`, `medium`, `large`, or `full` (default: `full`)
+
+**Examples:**
+```
+[council_hero_image]
+[council_hero_image size="large"]
+```
+
+**Usage in PHP for background images:**
+```php
+<?php
+// Get the hero image URL
+$image_url = do_shortcode('[council_hero_image]');
+
+// Clean it up just in case
+$image_url = trim($image_url);
+
+// Use as background style
+if (!empty($image_url)) {
+    echo '<div style="background-image: url(' . esc_url($image_url) . ');">';
+    // Your content here
+    echo '</div>';
+}
+?>
+```
+
+**Usage in custom CSS:**
+```php
+<?php if ($hero_url = do_shortcode('[council_hero_image size="full"]')): ?>
+<style>
+.hero-section {
+    background-image: url('<?php echo esc_url($hero_url); ?>');
+    background-size: cover;
+    background-position: center;
+}
+</style>
+<?php endif; ?>
+```
+
 ### Accessing Settings Programmatically
 
 You can also access the council settings in your theme or other plugins:
@@ -166,14 +209,25 @@ $logo_url = Council_Controller::get_council_logo_url();
 
 // Get council logo attachment ID
 $logo_id = Council_Controller::get_council_logo_id();
+
+// Get hero image URL (specify size: thumbnail, medium, large, full)
+$hero_url = Council_Controller::get_hero_image_url('full');
+
+// Get hero image attachment ID
+$hero_id = Council_Controller::get_hero_image_id();
 ```
 
 ## Features
 
-- **Shortcodes**: Three shortcodes to display council information anywhere on your site
-  - `[council_name]` - Display council name with customizable HTML tags
+- **Shortcodes**: Four shortcodes to display council information anywhere on your site
+  - `[council_name]` - Display council name with customizable HTML tags, prepend/append text
   - `[council_logo]` - Display council logo with customizable size, styling, and ARIA labels
   - `[council_info]` - Display name and logo together
+  - `[council_hero_image]` - Return hero image URL for background/banner usage
+- **Hero Image Management**: Upload and manage a hero/banner image for site backgrounds
+  - Media library integration for easy image selection
+  - Returns clean URL output (no HTML markup) for flexible usage
+  - Perfect for CSS background-image properties or PHP background styles
 - **Color Management**: Configure site-wide color scheme
   - Primary, Secondary, and Tertiary brand colors
   - Individual heading colors (H1-H6)
@@ -183,7 +237,7 @@ $logo_id = Council_Controller::get_council_logo_id();
   - Button colors (background, text, hover states)
   - CSS variables output for page builder integration
 - **WordPress Settings API Integration**: Proper settings management using WordPress best practices
-- **Media Library Integration**: Easy logo selection using the native WordPress media uploader
+- **Media Library Integration**: Easy logo and hero image selection using the native WordPress media uploader
 - **Color Picker Integration**: User-friendly color selection with WordPress color picker
 - **Sanitization & Security**: All inputs are properly sanitized and escaped
 - **Translation Ready**: All strings are internationalized and ready for translation
@@ -199,7 +253,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.7.0
+**Current Version:** 1.8.0
 
 ### Version Format
 

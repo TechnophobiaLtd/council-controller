@@ -5,6 +5,34 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2025-11-10
+
+### Added
+- **Hero Image Field**: New hero image management for background/banner images
+  - Admin interface field for uploading hero image from media library
+  - Stores attachment ID in database
+  - Media library integration with preview and upload/remove buttons
+- **`[council_hero_image]` Shortcode**: Returns just the image URL (no HTML markup)
+  - Perfect for use in CSS background-image properties
+  - Ideal for PHP background styles
+  - Supports size parameter: thumbnail, medium, large, full (default: full)
+  - Example usage: `<?php $image_url = do_shortcode('[council_hero_image]'); ?>`
+- Public API methods for programmatic access:
+  - `Council_Controller::get_hero_image_url( $size )` - Get hero image URL at specified size
+  - `Council_Controller::get_hero_image_id()` - Get hero image attachment ID
+- JavaScript handlers for hero image upload and removal
+- Enhanced admin interface with hero image preview (max-width: 400px)
+
+### Changed
+- Updated JavaScript to handle separate hero image uploader instance
+- Extended settings sanitization to include hero image field
+- Admin interface now includes hero image field with full media library integration
+
+### Improved
+- Better support for background/banner image scenarios
+- Clean URL output for flexible usage in themes and page builders
+- Follows same pattern as existing logo field for consistency
+
 ## [1.7.0] - 2025-11-10
 
 ### Added

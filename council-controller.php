@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.7.0
+ * Version: 1.8.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -172,6 +172,21 @@ class Council_Controller {
                     '[council_info prepend="Official Site of" logo_size="medium"]',
                 ),
             ),
+            'council_hero_image' => array(
+                'tag'         => 'council_hero_image',
+                'description' => __( 'Returns the URL of the hero image. Outputs only the URL with no HTML markup, perfect for use in CSS background-image properties or PHP background styles.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'size',
+                        'description' => __( 'Image size: thumbnail, medium, large, or full (default: full)', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[council_hero_image]',
+                    '[council_hero_image size="large"]',
+                    '[council_hero_image size="full"]',
+                ),
+            ),
         );
         
         /**
@@ -226,6 +241,14 @@ class Council_Controller {
             'council_logo',
             __( 'Council Logo', 'council-controller' ),
             array( $this, 'render_council_logo_field' ),
+            'council-settings',
+            'council_controller_main_section'
+        );
+        
+        add_settings_field(
+            'hero_image',
+            __( 'Hero Image', 'council-controller' ),
+            array( $this, 'render_hero_image_field' ),
             'council-settings',
             'council_controller_main_section'
         );
@@ -388,6 +411,10 @@ class Council_Controller {
             $sanitized['council_logo'] = absint( $input['council_logo'] );
         }
         
+        if ( isset( $input['hero_image'] ) ) {
+            $sanitized['hero_image'] = absint( $input['hero_image'] );
+        }
+        
         // Sanitize color fields
         $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'h1_color', 'h2_color', 'h3_color', 'h4_color', 'h5_color', 'h6_color', 'link_color', 'menu_link_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
         foreach ( $color_fields as $field ) {
@@ -529,6 +556,65 @@ class Council_Controller {
             
             <p class="description">
                 <?php esc_html_e( 'Upload or select a logo for your council from the media library.', 'council-controller' ); ?>
+            </p>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Render hero image field
+     */
+    public function render_hero_image_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $hero_id = isset( $options['hero_image'] ) ? $options['hero_image'] : '';
+        $hero_url = '';
+        
+        if ( $hero_id ) {
+            $hero_url = wp_get_attachment_url( $hero_id );
+            // Handle case where attachment doesn't exist
+            if ( false === $hero_url ) {
+                $hero_url = '';
+            }
+        }
+        ?>
+        <div class="council-hero-upload">
+            <input type="hidden" 
+                   name="<?php echo esc_attr( self::OPTION_NAME ); ?>[hero_image]" 
+                   id="hero_image_id" 
+                   value="<?php echo esc_attr( $hero_id ); ?>" />
+            
+            <div class="council-hero-preview" style="margin-bottom: 10px;">
+                <?php if ( $hero_url ) : ?>
+                    <img src="<?php echo esc_url( $hero_url ); ?>" 
+                         alt="<?php esc_attr_e( 'Hero Image', 'council-controller' ); ?>" 
+                         style="max-width: 400px; height: auto; display: block;" />
+                <?php else : ?>
+                    <img src="" 
+                         alt="<?php esc_attr_e( 'Hero Image', 'council-controller' ); ?>" 
+                         style="max-width: 400px; height: auto; display: none;" />
+                <?php endif; ?>
+            </div>
+            
+            <button type="button" 
+                    class="button council-upload-hero-button">
+                <?php esc_html_e( 'Choose Hero Image', 'council-controller' ); ?>
+            </button>
+            
+            <?php if ( $hero_id ) : ?>
+                <button type="button" 
+                        class="button council-remove-hero-button">
+                    <?php esc_html_e( 'Remove Hero Image', 'council-controller' ); ?>
+                </button>
+            <?php else : ?>
+                <button type="button" 
+                        class="button council-remove-hero-button" 
+                        style="display: none;">
+                    <?php esc_html_e( 'Remove Hero Image', 'council-controller' ); ?>
+                </button>
+            <?php endif; ?>
+            
+            <p class="description">
+                <?php esc_html_e( 'Upload or select a hero image from the media library. Use the [council_hero_image] shortcode to get the image URL for backgrounds.', 'council-controller' ); ?>
             </p>
         </div>
         <?php
@@ -1026,12 +1112,42 @@ class Council_Controller {
     }
     
     /**
+     * Get hero image URL
+     * 
+     * @param string $size Image size (thumbnail, medium, large, full). Default: full
+     * @return string Hero image URL or empty string
+     */
+    public static function get_hero_image_url( $size = 'full' ) {
+        $options = get_option( self::OPTION_NAME, array() );
+        $hero_id = isset( $options['hero_image'] ) ? $options['hero_image'] : '';
+        
+        if ( $hero_id ) {
+            $hero_url = wp_get_attachment_image_url( $hero_id, $size );
+            // Return empty string if attachment doesn't exist
+            return ( false === $hero_url ) ? '' : $hero_url;
+        }
+        
+        return '';
+    }
+    
+    /**
+     * Get hero image ID
+     * 
+     * @return int|string Hero image attachment ID or empty string
+     */
+    public static function get_hero_image_id() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['hero_image'] ) ? $options['hero_image'] : '';
+    }
+    
+    /**
      * Register shortcodes
      */
     public function register_shortcodes() {
         add_shortcode( 'council_name', array( $this, 'shortcode_council_name' ) );
         add_shortcode( 'council_logo', array( $this, 'shortcode_council_logo' ) );
         add_shortcode( 'council_info', array( $this, 'shortcode_council_info' ) );
+        add_shortcode( 'council_hero_image', array( $this, 'shortcode_hero_image' ) );
     }
     
     /**
@@ -1230,6 +1346,40 @@ class Council_Controller {
         $output .= '</div>';
         
         return $output;
+    }
+    
+    /**
+     * Shortcode: [council_hero_image]
+     * Returns the URL of the hero image (no HTML markup)
+     * 
+     * This shortcode outputs only the image URL, making it perfect for use
+     * in CSS background-image properties or PHP background styles.
+     * 
+     * Attributes:
+     * - size: thumbnail, medium, large, full (default: full)
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string Hero image URL or empty string
+     */
+    public function shortcode_hero_image( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'size' => 'full',
+            ),
+            $atts,
+            'council_hero_image'
+        );
+        
+        // Get the hero image URL
+        $hero_url = self::get_hero_image_url( $atts['size'] );
+        
+        // Return empty string if no hero image is set
+        if ( empty( $hero_url ) ) {
+            return '';
+        }
+        
+        // Return just the URL (no HTML markup)
+        return esc_url( $hero_url );
     }
 }
 
