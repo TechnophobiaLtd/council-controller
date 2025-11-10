@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -259,6 +259,38 @@ class Council_Controller {
             'council_controller_colors_section'
         );
         
+        add_settings_field(
+            'button_color',
+            __( 'Button Color', 'council-controller' ),
+            array( $this, 'render_button_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'button_text_color',
+            __( 'Button Text Color', 'council-controller' ),
+            array( $this, 'render_button_text_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'button_hover_color',
+            __( 'Button Hover Color', 'council-controller' ),
+            array( $this, 'render_button_hover_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
+            'button_text_hover_color',
+            __( 'Button Text Hover Color', 'council-controller' ),
+            array( $this, 'render_button_text_hover_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
         add_settings_section(
             'council_controller_shortcodes_section',
             __( 'Available Shortcodes', 'council-controller' ),
@@ -282,7 +314,7 @@ class Council_Controller {
         }
         
         // Sanitize color fields
-        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'heading_color', 'body_color' );
+        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'heading_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
         foreach ( $color_fields as $field ) {
             if ( isset( $input[ $field ] ) ) {
                 $sanitized[ $field ] = sanitize_hex_color( $input[ $field ] );
@@ -530,6 +562,82 @@ class Council_Controller {
     }
     
     /**
+     * Render button color field
+     */
+    public function render_button_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $button_color = isset( $options['button_color'] ) ? $options['button_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[button_color]" 
+               id="button_color" 
+               value="<?php echo esc_attr( $button_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Button background color. Available as CSS variable: --council-button', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render button text color field
+     */
+    public function render_button_text_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $button_text_color = isset( $options['button_text_color'] ) ? $options['button_text_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[button_text_color]" 
+               id="button_text_color" 
+               value="<?php echo esc_attr( $button_text_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Button text color. Available as CSS variable: --council-button-text', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render button hover color field
+     */
+    public function render_button_hover_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $button_hover_color = isset( $options['button_hover_color'] ) ? $options['button_hover_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[button_hover_color]" 
+               id="button_hover_color" 
+               value="<?php echo esc_attr( $button_hover_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Button hover background color. Available as CSS variable: --council-button-hover', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render button text hover color field
+     */
+    public function render_button_text_hover_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $button_text_hover_color = isset( $options['button_text_hover_color'] ) ? $options['button_text_hover_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[button_text_hover_color]" 
+               id="button_text_hover_color" 
+               value="<?php echo esc_attr( $button_text_hover_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Button text hover color. Available as CSS variable: --council-button-text-hover', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
      * Enqueue admin scripts
      */
     public function enqueue_admin_scripts( $hook ) {
@@ -549,7 +657,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/js/admin.js', __FILE__ ),
             array( 'jquery', 'wp-color-picker' ),
-            '1.3.0',
+            '1.4.0',
             true
         );
         
@@ -568,7 +676,7 @@ class Council_Controller {
             'council-controller-admin',
             plugins_url( 'assets/css/admin.css', __FILE__ ),
             array(),
-            '1.3.0'
+            '1.4.0'
         );
     }
     
@@ -624,6 +732,22 @@ class Council_Controller {
         
         if ( ! empty( $options['body_color'] ) ) {
             $css_vars[] = '--council-body-text: ' . esc_attr( $options['body_color'] );
+        }
+        
+        if ( ! empty( $options['button_color'] ) ) {
+            $css_vars[] = '--council-button: ' . esc_attr( $options['button_color'] );
+        }
+        
+        if ( ! empty( $options['button_text_color'] ) ) {
+            $css_vars[] = '--council-button-text: ' . esc_attr( $options['button_text_color'] );
+        }
+        
+        if ( ! empty( $options['button_hover_color'] ) ) {
+            $css_vars[] = '--council-button-hover: ' . esc_attr( $options['button_hover_color'] );
+        }
+        
+        if ( ! empty( $options['button_text_hover_color'] ) ) {
+            $css_vars[] = '--council-button-text-hover: ' . esc_attr( $options['button_text_hover_color'] );
         }
         
         // Only output if we have colors defined

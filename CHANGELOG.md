@@ -5,6 +5,27 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2025-11-10
+
+### Added
+- **Button Color Management**: Extended color system with button-specific colors
+  - Button background color with CSS variable `--council-button`
+  - Button text color with CSS variable `--council-button-text`
+  - Button hover background color with CSS variable `--council-button-hover`
+  - Button text hover color with CSS variable `--council-button-text-hover`
+- WordPress Color Picker integration for new button color fields
+- Frontend CSS variable output for button styling
+
+### Changed
+- Admin interface now includes 9 total color fields (up from 5)
+- Enhanced color management section with button state colors
+- Updated documentation with button color usage examples
+
+### Improved
+- Complete button styling control through CSS variables
+- Better page builder integration for interactive elements
+- Hover state customization for improved user experience
+
 ## [1.3.0] - 2025-11-10
 
 ### Added
@@ -93,6 +114,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Direct file access prevention via `ABSPATH` check
 - Proper handling of attachment URL false returns
 
+[1.4.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.4.0
 [1.3.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.3.0
 [1.2.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.2.0
 [1.1.0]: https://github.com/soundbyter/council-controller/releases/tag/v1.1.0

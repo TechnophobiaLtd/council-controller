@@ -42,6 +42,10 @@ The plugin provides a color management system that outputs CSS variables for use
 - `--council-tertiary` - Tertiary brand color
 - `--council-heading` - Default heading color
 - `--council-body-text` - Default body text color
+- `--council-button` - Button background color
+- `--council-button-text` - Button text color
+- `--council-button-hover` - Button hover background color
+- `--council-button-text-hover` - Button text hover color
 
 These variables can be used in your theme's CSS or page builder:
 
@@ -53,6 +57,16 @@ These variables can be used in your theme's CSS or page builder:
 
 h1, h2, h3 {
     color: var(--council-heading);
+}
+
+button, .btn {
+    background-color: var(--council-button);
+    color: var(--council-button-text);
+}
+
+button:hover, .btn:hover {
+    background-color: var(--council-button-hover);
+    color: var(--council-button-text-hover);
 }
 ```
 
@@ -137,6 +151,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 - **Color Management**: Configure site-wide color scheme
   - Primary, Secondary, and Tertiary brand colors
   - Heading and Body text colors
+  - Button colors (background, text, hover states)
   - CSS variables output for page builder integration
 - **WordPress Settings API Integration**: Proper settings management using WordPress best practices
 - **Media Library Integration**: Easy logo selection using the native WordPress media uploader
@@ -155,7 +170,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.3.0
+**Current Version:** 1.4.0
 
 ### Version Format
 
