@@ -5,6 +5,30 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0] - 2025-11-11
+
+### Added
+- **REST API Endpoints**: New API endpoints for reading and updating council settings
+  - `GET /wp-json/council-controller/v1/settings` - Retrieve all council settings (public access)
+  - `POST/PUT /wp-json/council-controller/v1/settings` - Update council settings (requires `manage_options` capability)
+  - All text, image, and color fields exposed via API
+  - Image fields return both attachment IDs and full URLs for convenience
+  - Proper authentication and permission checks for write operations
+  - Comprehensive input validation and sanitization
+  - Error handling with appropriate HTTP status codes
+  - Designed for migrating old council websites to template sites
+
+### Technical Details
+- Added `register_rest_routes()` method to register API endpoints
+- Added `rest_get_settings()` method for GET requests (returns all fields)
+- Added `rest_update_settings()` method for POST/PUT requests (validates and updates fields)
+- Added `rest_permission_check()` method for authorization (requires `manage_options`)
+- Added `get_rest_update_args()` method to define REST API schema
+- Email validation ensures valid email format or empty value
+- Image fields validate that attachment IDs correspond to actual images
+- Color fields validate hex color format or empty value
+- Response includes both success status and updated data
+
 ## [1.13.0] - 2025-11-11
 
 ### Added

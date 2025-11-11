@@ -343,32 +343,206 @@ $hero_url = Council_Controller::get_hero_image_url('full');
 $hero_id = Council_Controller::get_hero_image_id();
 ```
 
-## Features
+## REST API
 
-- **Shortcodes**: Four shortcodes to display council information anywhere on your site
-  - `[council_name]` - Display council name with customizable HTML tags, prepend/append text
-  - `[council_logo]` - Display council logo with customizable size, styling, and ARIA labels
-  - `[council_info]` - Display name and logo together
-  - `[council_hero_image]` - Return hero image URL for background/banner usage
-- **Hero Image Management**: Upload and manage a hero/banner image for site backgrounds
-  - Media library integration for easy image selection
-  - Returns clean URL output (no HTML markup) for flexible usage
-  - Perfect for CSS background-image properties or PHP background styles
-- **Color Management**: Configure site-wide color scheme
-  - Primary, Secondary, and Tertiary brand colors
-  - Individual heading colors (H1-H6)
-  - Link color
-  - Menu link color
-  - Body text color
-  - Button colors (background, text, hover states)
-  - CSS variables output for page builder integration
-- **WordPress Settings API Integration**: Proper settings management using WordPress best practices
-- **Media Library Integration**: Easy logo and hero image selection using the native WordPress media uploader
-- **Color Picker Integration**: User-friendly color selection with WordPress color picker
-- **Sanitization & Security**: All inputs are properly sanitized and escaped
-- **Translation Ready**: All strings are internationalized and ready for translation
-- **Clean UI**: Simple, intuitive admin interface following WordPress design patterns
-- **Accessibility**: ARIA label support for improved screen reader compatibility
+**New in v1.14.0:** The plugin provides REST API endpoints for reading and updating all council settings programmatically. This is particularly useful for migrating old council websites to the template site.
+
+### Authentication
+
+- **GET requests** (reading data): No authentication required - data is public
+- **POST/PUT requests** (updating data): Requires authentication with `manage_options` capability (typically Administrator role)
+
+### Endpoints
+
+#### Get All Settings
+
+```
+GET /wp-json/council-controller/v1/settings
+```
+
+**Response:**
+```json
+{
+  "council_name": "Example Council",
+  "parish_name": "Example Parish",
+  "parish_established_year": "1850",
+  "council_address": "123 Main Street\nTown, County\nPostcode",
+  "meeting_venue_address": "Village Hall, High Street",
+  "email_address": "clerk@example.gov.uk",
+  "phone_number": "01234 567890",
+  "clerk_name": "John Smith",
+  "office_hours": "Monday-Friday 9am-5pm",
+  "map_embed": "<iframe src='...'></iframe>",
+  "meeting_schedule": "First Tuesday of every month",
+  "annual_meeting_date": "May 15th",
+  "county": "Example County",
+  "council_logo": 123,
+  "council_logo_url": "https://example.com/wp-content/uploads/2025/11/logo.png",
+  "hero_image": 456,
+  "hero_image_url": "https://example.com/wp-content/uploads/2025/11/hero.jpg",
+  "primary_color": "#0066cc",
+  "secondary_color": "#ff6600",
+  "tertiary_color": "#00cc66",
+  "h1_color": "#333333",
+  "h2_color": "#444444",
+  "h3_color": "#555555",
+  "h4_color": "#666666",
+  "h5_color": "#777777",
+  "h6_color": "#888888",
+  "link_color": "#0066cc",
+  "menu_link_color": "#333333",
+  "title_color": "#000000",
+  "body_color": "#333333",
+  "button_color": "#0066cc",
+  "button_text_color": "#ffffff",
+  "button_hover_color": "#0052a3",
+  "button_text_hover_color": "#ffffff"
+}
+```
+
+#### Update Settings
+
+```
+POST /wp-json/council-controller/v1/settings
+PUT /wp-json/council-controller/v1/settings
+```
+
+**Authentication Required:** You must be logged in with `manage_options` capability.
+
+**Request Body (JSON):**
+```json
+{
+  "council_name": "New Council Name",
+  "parish_name": "New Parish Name",
+  "primary_color": "#ff0000",
+  "council_logo": 789
+}
+```
+
+**Notes:**
+- You can update any combination of fields
+- Only include fields you want to update
+- Image fields accept attachment IDs (must be valid image attachments)
+- Color fields must be valid hex colors (e.g., `#ff0000`) or empty strings
+- Email addresses are validated for proper format
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "message": "Settings updated successfully.",
+  "data": {
+    // ... full settings object with updated values
+  }
+}
+```
+
+**Error Response Examples:**
+```json
+{
+  "code": "invalid_email",
+  "message": "Invalid email address format.",
+  "data": { "status": 400 }
+}
+```
+
+```json
+{
+  "code": "invalid_attachment",
+  "message": "Invalid council logo attachment ID.",
+  "data": { "status": 400 }
+}
+```
+
+```json
+{
+  "code": "invalid_color",
+  "message": "Invalid color format for primary_color. Must be a hex color.",
+  "data": { "status": 400 }
+}
+```
+
+### API Usage Examples
+
+**Read Settings (cURL):**
+```bash
+curl https://example.com/wp-json/council-controller/v1/settings
+```
+
+**Update Settings (cURL with Authentication):**
+```bash
+curl -X POST https://example.com/wp-json/council-controller/v1/settings \
+  -H "Content-Type: application/json" \
+  -u admin:password \
+  -d '{
+    "council_name": "Updated Council Name",
+    "primary_color": "#0066cc",
+    "email_address": "clerk@newcouncil.gov.uk"
+  }'
+```
+
+**Read Settings (JavaScript):**
+```javascript
+fetch('https://example.com/wp-json/council-controller/v1/settings')
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+
+**Update Settings (JavaScript with Authentication):**
+```javascript
+fetch('https://example.com/wp-json/council-controller/v1/settings', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Basic ' + btoa('admin:password')
+  },
+  body: JSON.stringify({
+    council_name: 'Updated Council Name',
+    primary_color: '#0066cc'
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));
+```
+
+**Migration Script Example (PHP):**
+```php
+<?php
+// Example script for migrating council data from old site to new template site
+
+$old_site_data = array(
+    'council_name'    => 'Example Town Council',
+    'parish_name'     => 'Example Parish',
+    'email_address'   => 'clerk@example.gov.uk',
+    'phone_number'    => '01234 567890',
+    'primary_color'   => '#0066cc',
+    'secondary_color' => '#ff6600',
+    // ... more fields
+);
+
+$new_site_url = 'https://newsite.com';
+$username = 'admin';
+$password = 'application_password'; // Use WordPress Application Password
+
+$response = wp_remote_post( $new_site_url . '/wp-json/council-controller/v1/settings', array(
+    'headers' => array(
+        'Content-Type'  => 'application/json',
+        'Authorization' => 'Basic ' . base64_encode( $username . ':' . $password ),
+    ),
+    'body' => wp_json_encode( $old_site_data ),
+) );
+
+if ( is_wp_error( $response ) ) {
+    echo 'Error: ' . $response->get_error_message();
+} else {
+    $body = json_decode( wp_remote_retrieve_body( $response ), true );
+    if ( isset( $body['success'] ) && $body['success'] ) {
+        echo 'Successfully migrated council data!';
+    } else {
+        echo 'Migration failed: ' . print_r( $body, true );
+    }
+}
+```
 
 ## Requirements
 
@@ -379,7 +553,7 @@ $hero_id = Council_Controller::get_hero_image_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.8.0
+**Current Version:** 1.14.0
 
 ### Version Format
 
@@ -393,13 +567,6 @@ Given a version number MAJOR.MINOR.PATCH:
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
 For technical details and guidelines for automated agents, see [AGENTS.md](AGENTS.md).
-
-## Future Enhancements
-
-- Additional fields (address, phone, email, etc.)
-- Social media links
-- Custom CSS styling options
-- Widget support
 
 ## Changelog
 
