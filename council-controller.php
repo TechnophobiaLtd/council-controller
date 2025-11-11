@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.12.0
+ * Version: 1.13.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -289,6 +289,271 @@ class Council_Controller {
                     '[parish_established_year tag="p" class="est-year"]',
                 ),
             ),
+            'council_address' => array(
+                'tag'         => 'council_address',
+                'description' => __( 'Displays the council office address.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the address: h1, h2, h3, h4, h5, h6, p, span, div, or address (default: p)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the address', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the address', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[council_address]',
+                    '[council_address tag="address"]',
+                    '[council_address tag="p" class="office-address"]',
+                ),
+            ),
+            'meeting_venue_address' => array(
+                'tag'         => 'meeting_venue_address',
+                'description' => __( 'Displays the meeting venue address (if different from council office).', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the address: h1, h2, h3, h4, h5, h6, p, span, div, or address (default: p)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the address', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the address', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[meeting_venue_address]',
+                    '[meeting_venue_address tag="address"]',
+                    '[meeting_venue_address prepend="Meetings held at: "]',
+                ),
+            ),
+            'email_address' => array(
+                'tag'         => 'email_address',
+                'description' => __( 'Displays the council email address with optional mailto link.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the email: span, div, or p (default: span)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'link',
+                        'description' => __( 'Whether to create mailto link: yes or no (default: yes)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the email', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the email', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[email_address]',
+                    '[email_address link="no"]',
+                    '[email_address prepend="Email: "]',
+                ),
+            ),
+            'phone_number' => array(
+                'tag'         => 'phone_number',
+                'description' => __( 'Displays the council phone number with optional tel link.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the phone: span, div, or p (default: span)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'link',
+                        'description' => __( 'Whether to create tel link: yes or no (default: yes)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the phone number', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the phone number', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[phone_number]',
+                    '[phone_number link="no"]',
+                    '[phone_number prepend="Tel: "]',
+                ),
+            ),
+            'clerk_name' => array(
+                'tag'         => 'clerk_name',
+                'description' => __( 'Displays the clerk\'s name.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the name: h1, h2, h3, h4, h5, h6, p, span, or div (default: span)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the name', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the name', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[clerk_name]',
+                    '[clerk_name prepend="Clerk: "]',
+                    '[clerk_name tag="p" class="clerk-info"]',
+                ),
+            ),
+            'office_hours' => array(
+                'tag'         => 'office_hours',
+                'description' => __( 'Displays the office hours and opening times.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the hours: h1, h2, h3, h4, h5, h6, p, span, or div (default: p)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the hours', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the hours', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[office_hours]',
+                    '[office_hours prepend="Open: "]',
+                    '[office_hours tag="div" class="hours-info"]',
+                ),
+            ),
+            'map_embed' => array(
+                'tag'         => 'map_embed',
+                'description' => __( 'Displays the map embed code or coordinates.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper div', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[map_embed]',
+                    '[map_embed class="council-map"]',
+                ),
+            ),
+            'meeting_schedule' => array(
+                'tag'         => 'meeting_schedule',
+                'description' => __( 'Displays the meeting schedule or frequency.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the schedule: h1, h2, h3, h4, h5, h6, p, span, or div (default: p)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the schedule', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the schedule', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[meeting_schedule]',
+                    '[meeting_schedule prepend="Meetings: "]',
+                    '[meeting_schedule tag="p" class="meeting-info"]',
+                ),
+            ),
+            'annual_meeting_date' => array(
+                'tag'         => 'annual_meeting_date',
+                'description' => __( 'Displays the annual parish meeting date.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the date: h1, h2, h3, h4, h5, h6, p, span, or div (default: p)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the date', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the date', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[annual_meeting_date]',
+                    '[annual_meeting_date prepend="Annual Meeting: "]',
+                    '[annual_meeting_date tag="p" class="annual-meeting"]',
+                ),
+            ),
+            'county' => array(
+                'tag'         => 'county',
+                'description' => __( 'Displays the county name.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the county: h1, h2, h3, h4, h5, h6, p, span, or div (default: span)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the county', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the county', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[county]',
+                    '[county prepend="Located in "]',
+                    '[county tag="span" class="county-name"]',
+                ),
+            ),
         );
         
         /**
@@ -515,6 +780,110 @@ class Council_Controller {
             'council_controller_colors_section'
         );
         
+        // Contact & Location Section
+        add_settings_section(
+            'council_controller_contact_section',
+            __( 'Contact & Location', 'council-controller' ),
+            array( $this, 'render_contact_section_description' ),
+            'council-settings'
+        );
+        
+        add_settings_field(
+            'council_address',
+            __( 'Council Address', 'council-controller' ),
+            array( $this, 'render_council_address_field' ),
+            'council-settings',
+            'council_controller_contact_section'
+        );
+        
+        add_settings_field(
+            'meeting_venue_address',
+            __( 'Meeting Venue Address', 'council-controller' ),
+            array( $this, 'render_meeting_venue_address_field' ),
+            'council-settings',
+            'council_controller_contact_section'
+        );
+        
+        add_settings_field(
+            'email_address',
+            __( 'Email Address', 'council-controller' ),
+            array( $this, 'render_email_address_field' ),
+            'council-settings',
+            'council_controller_contact_section'
+        );
+        
+        add_settings_field(
+            'phone_number',
+            __( 'Phone Number', 'council-controller' ),
+            array( $this, 'render_phone_number_field' ),
+            'council-settings',
+            'council_controller_contact_section'
+        );
+        
+        add_settings_field(
+            'clerk_name',
+            __( 'Clerk\'s Name', 'council-controller' ),
+            array( $this, 'render_clerk_name_field' ),
+            'council-settings',
+            'council_controller_contact_section'
+        );
+        
+        add_settings_field(
+            'office_hours',
+            __( 'Office Hours / Opening Times', 'council-controller' ),
+            array( $this, 'render_office_hours_field' ),
+            'council-settings',
+            'council_controller_contact_section'
+        );
+        
+        add_settings_field(
+            'map_embed',
+            __( 'Map Embed / Coordinates', 'council-controller' ),
+            array( $this, 'render_map_embed_field' ),
+            'council-settings',
+            'council_controller_contact_section'
+        );
+        
+        // Governance & Meetings Section
+        add_settings_section(
+            'council_controller_governance_section',
+            __( 'Governance & Meetings', 'council-controller' ),
+            array( $this, 'render_governance_section_description' ),
+            'council-settings'
+        );
+        
+        add_settings_field(
+            'meeting_schedule',
+            __( 'Meeting Schedule / Frequency', 'council-controller' ),
+            array( $this, 'render_meeting_schedule_field' ),
+            'council-settings',
+            'council_controller_governance_section'
+        );
+        
+        add_settings_field(
+            'annual_meeting_date',
+            __( 'Annual Parish Meeting Date', 'council-controller' ),
+            array( $this, 'render_annual_meeting_date_field' ),
+            'council-settings',
+            'council_controller_governance_section'
+        );
+        
+        // Misc Section
+        add_settings_section(
+            'council_controller_misc_section',
+            __( 'Miscellaneous', 'council-controller' ),
+            array( $this, 'render_misc_section_description' ),
+            'council-settings'
+        );
+        
+        add_settings_field(
+            'county',
+            __( 'County', 'council-controller' ),
+            array( $this, 'render_county_field' ),
+            'council-settings',
+            'council_controller_misc_section'
+        );
+        
         add_settings_section(
             'council_controller_shortcodes_section',
             __( 'Available Shortcodes', 'council-controller' ),
@@ -555,6 +924,61 @@ class Council_Controller {
             if ( isset( $input[ $field ] ) ) {
                 $sanitized[ $field ] = sanitize_hex_color( $input[ $field ] );
             }
+        }
+        
+        // Sanitize contact & location fields
+        if ( isset( $input['council_address'] ) ) {
+            $sanitized['council_address'] = sanitize_textarea_field( $input['council_address'] );
+        }
+        
+        if ( isset( $input['meeting_venue_address'] ) ) {
+            $sanitized['meeting_venue_address'] = sanitize_textarea_field( $input['meeting_venue_address'] );
+        }
+        
+        if ( isset( $input['email_address'] ) ) {
+            $sanitized['email_address'] = sanitize_email( $input['email_address'] );
+        }
+        
+        if ( isset( $input['phone_number'] ) ) {
+            $sanitized['phone_number'] = sanitize_text_field( $input['phone_number'] );
+        }
+        
+        if ( isset( $input['clerk_name'] ) ) {
+            $sanitized['clerk_name'] = sanitize_text_field( $input['clerk_name'] );
+        }
+        
+        if ( isset( $input['office_hours'] ) ) {
+            $sanitized['office_hours'] = sanitize_textarea_field( $input['office_hours'] );
+        }
+        
+        if ( isset( $input['map_embed'] ) ) {
+            // Allow iframe and basic HTML for map embeds, but sanitize carefully
+            $sanitized['map_embed'] = wp_kses( $input['map_embed'], array(
+                'iframe' => array(
+                    'src'             => true,
+                    'width'           => true,
+                    'height'          => true,
+                    'frameborder'     => true,
+                    'style'           => true,
+                    'allowfullscreen' => true,
+                    'loading'         => true,
+                    'referrerpolicy'  => true,
+                ),
+            ) );
+        }
+        
+        // Sanitize governance fields
+        if ( isset( $input['meeting_schedule'] ) ) {
+            $sanitized['meeting_schedule'] = sanitize_text_field( $input['meeting_schedule'] );
+        }
+        
+        if ( isset( $input['annual_meeting_date'] ) ) {
+            $sanitized['annual_meeting_date'] = sanitize_text_field( $input['annual_meeting_date'] );
+        }
+        
+        // Sanitize misc fields
+        if ( isset( $input['county'] ) ) {
+            $sanitized['county'] = sanitize_text_field( $input['county'] );
         }
         
         return $sanitized;
@@ -1121,6 +1545,203 @@ class Council_Controller {
     }
     
     /**
+     * Render contact section description
+     */
+    public function render_contact_section_description() {
+        echo '<p>' . esc_html__( 'Enter contact and location information for your council.', 'council-controller' ) . '</p>';
+    }
+    
+    /**
+     * Render council address field
+     */
+    public function render_council_address_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['council_address'] ) ? $options['council_address'] : '';
+        ?>
+        <textarea name="<?php echo esc_attr( self::OPTION_NAME ); ?>[council_address]" 
+                  rows="3" 
+                  class="large-text"
+                  placeholder="<?php esc_attr_e( 'Enter the council office address', 'council-controller' ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
+        <p class="description">
+            <?php esc_html_e( 'The main address for the council office.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render meeting venue address field
+     */
+    public function render_meeting_venue_address_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['meeting_venue_address'] ) ? $options['meeting_venue_address'] : '';
+        ?>
+        <textarea name="<?php echo esc_attr( self::OPTION_NAME ); ?>[meeting_venue_address]" 
+                  rows="3" 
+                  class="large-text"
+                  placeholder="<?php esc_attr_e( 'Enter the meeting venue address if different from council address', 'council-controller' ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
+        <p class="description">
+            <?php esc_html_e( 'Meeting venue address (if different from council office address).', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render email address field
+     */
+    public function render_email_address_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['email_address'] ) ? $options['email_address'] : '';
+        ?>
+        <input type="email" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[email_address]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( 'council@example.com', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'Primary email address for the council.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render phone number field
+     */
+    public function render_phone_number_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['phone_number'] ) ? $options['phone_number'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[phone_number]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( '01234 567890', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'Main contact phone number.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render clerk name field
+     */
+    public function render_clerk_name_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['clerk_name'] ) ? $options['clerk_name'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[clerk_name]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( 'John Smith', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'Name of the parish/town clerk.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render office hours field
+     */
+    public function render_office_hours_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['office_hours'] ) ? $options['office_hours'] : '';
+        ?>
+        <textarea name="<?php echo esc_attr( self::OPTION_NAME ); ?>[office_hours]" 
+                  rows="3" 
+                  class="large-text"
+                  placeholder="<?php esc_attr_e( 'Monday-Friday: 9am-5pm', 'council-controller' ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
+        <p class="description">
+            <?php esc_html_e( 'Office opening hours and times.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render map embed field
+     */
+    public function render_map_embed_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['map_embed'] ) ? $options['map_embed'] : '';
+        ?>
+        <textarea name="<?php echo esc_attr( self::OPTION_NAME ); ?>[map_embed]" 
+                  rows="5" 
+                  class="large-text code"
+                  placeholder="<?php esc_attr_e( 'Paste Google Maps iframe embed code or coordinates (lat,lng)', 'council-controller' ); ?>"><?php echo esc_textarea( $value ); ?></textarea>
+        <p class="description">
+            <?php esc_html_e( 'Map embed code (e.g., Google Maps iframe) or coordinates. Paste the embed code from your map provider.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render governance section description
+     */
+    public function render_governance_section_description() {
+        echo '<p>' . esc_html__( 'Configure meeting schedules and governance information.', 'council-controller' ) . '</p>';
+    }
+    
+    /**
+     * Render meeting schedule field
+     */
+    public function render_meeting_schedule_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['meeting_schedule'] ) ? $options['meeting_schedule'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[meeting_schedule]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( 'First Monday of each month at 7:00 PM', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'Regular meeting schedule or frequency.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render annual meeting date field
+     */
+    public function render_annual_meeting_date_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['annual_meeting_date'] ) ? $options['annual_meeting_date'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[annual_meeting_date]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( 'Third Thursday in May', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'Annual parish meeting date or schedule.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render misc section description
+     */
+    public function render_misc_section_description() {
+        echo '<p>' . esc_html__( 'Additional information about your council.', 'council-controller' ) . '</p>';
+    }
+    
+    /**
+     * Render county field
+     */
+    public function render_county_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['county'] ) ? $options['county'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[county]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( 'Example County', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'The county in which the council is located.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
      * Enqueue admin scripts
      */
     public function enqueue_admin_scripts( $hook ) {
@@ -1364,6 +1985,106 @@ class Council_Controller {
     }
     
     /**
+     * Get council address
+     * 
+     * @return string Council address or empty string
+     */
+    public static function get_council_address() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['council_address'] ) ? $options['council_address'] : '';
+    }
+    
+    /**
+     * Get meeting venue address
+     * 
+     * @return string Meeting venue address or empty string
+     */
+    public static function get_meeting_venue_address() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['meeting_venue_address'] ) ? $options['meeting_venue_address'] : '';
+    }
+    
+    /**
+     * Get email address
+     * 
+     * @return string Email address or empty string
+     */
+    public static function get_email_address() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['email_address'] ) ? $options['email_address'] : '';
+    }
+    
+    /**
+     * Get phone number
+     * 
+     * @return string Phone number or empty string
+     */
+    public static function get_phone_number() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['phone_number'] ) ? $options['phone_number'] : '';
+    }
+    
+    /**
+     * Get clerk name
+     * 
+     * @return string Clerk's name or empty string
+     */
+    public static function get_clerk_name() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['clerk_name'] ) ? $options['clerk_name'] : '';
+    }
+    
+    /**
+     * Get office hours
+     * 
+     * @return string Office hours or empty string
+     */
+    public static function get_office_hours() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['office_hours'] ) ? $options['office_hours'] : '';
+    }
+    
+    /**
+     * Get map embed
+     * 
+     * @return string Map embed code or coordinates or empty string
+     */
+    public static function get_map_embed() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['map_embed'] ) ? $options['map_embed'] : '';
+    }
+    
+    /**
+     * Get meeting schedule
+     * 
+     * @return string Meeting schedule or empty string
+     */
+    public static function get_meeting_schedule() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['meeting_schedule'] ) ? $options['meeting_schedule'] : '';
+    }
+    
+    /**
+     * Get annual meeting date
+     * 
+     * @return string Annual meeting date or empty string
+     */
+    public static function get_annual_meeting_date() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['annual_meeting_date'] ) ? $options['annual_meeting_date'] : '';
+    }
+    
+    /**
+     * Get county
+     * 
+     * @return string County name or empty string
+     */
+    public static function get_county() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['county'] ) ? $options['county'] : '';
+    }
+    
+    /**
      * Register shortcodes
      */
     public function register_shortcodes() {
@@ -1374,6 +2095,16 @@ class Council_Controller {
         add_shortcode( 'council_hero_background', array( $this, 'shortcode_hero_background' ) );
         add_shortcode( 'parish_name', array( $this, 'shortcode_parish_name' ) );
         add_shortcode( 'parish_established_year', array( $this, 'shortcode_parish_established_year' ) );
+        add_shortcode( 'council_address', array( $this, 'shortcode_council_address' ) );
+        add_shortcode( 'meeting_venue_address', array( $this, 'shortcode_meeting_venue_address' ) );
+        add_shortcode( 'email_address', array( $this, 'shortcode_email_address' ) );
+        add_shortcode( 'phone_number', array( $this, 'shortcode_phone_number' ) );
+        add_shortcode( 'clerk_name', array( $this, 'shortcode_clerk_name' ) );
+        add_shortcode( 'office_hours', array( $this, 'shortcode_office_hours' ) );
+        add_shortcode( 'map_embed', array( $this, 'shortcode_map_embed' ) );
+        add_shortcode( 'meeting_schedule', array( $this, 'shortcode_meeting_schedule' ) );
+        add_shortcode( 'annual_meeting_date', array( $this, 'shortcode_annual_meeting_date' ) );
+        add_shortcode( 'county', array( $this, 'shortcode_county' ) );
     }
     
     /**
@@ -1794,6 +2525,546 @@ class Council_Controller {
     }
     
     /**
+     * Shortcode: [council_address]
+     * Displays the council address
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div, address). Default: p
+     * - class: Optional CSS class
+     * - prepend: Text to add before the address
+     * - append: Text to add after the address
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_council_address( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'p',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'council_address'
+        );
+        
+        $address = self::get_council_address();
+        
+        if ( empty( $address ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div', 'address' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'p';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= nl2br( esc_html( $address ) );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [meeting_venue_address]
+     * Displays the meeting venue address
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div, address). Default: p
+     * - class: Optional CSS class
+     * - prepend: Text to add before the address
+     * - append: Text to add after the address
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_meeting_venue_address( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'p',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'meeting_venue_address'
+        );
+        
+        $address = self::get_meeting_venue_address();
+        
+        if ( empty( $address ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div', 'address' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'p';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= nl2br( esc_html( $address ) );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [email_address]
+     * Displays the email address with optional mailto link
+     * 
+     * Attributes:
+     * - tag: HTML tag (span, div, p). Default: span
+     * - class: Optional CSS class
+     * - link: Whether to create mailto link: yes or no (default: yes)
+     * - prepend: Text to add before the email
+     * - append: Text to add after the email
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_email_address( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'span',
+                'class'   => '',
+                'link'    => 'yes',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'email_address'
+        );
+        
+        $email = self::get_email_address();
+        
+        if ( empty( $email ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'span', 'div', 'p' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with optional link
+        $email_html = esc_html( $email );
+        if ( 'yes' === strtolower( $atts['link'] ) ) {
+            $email_html = '<a href="' . esc_url( 'mailto:' . $email ) . '">' . $email_html . '</a>';
+        }
+        
+        // Add prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= $email_html;
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [phone_number]
+     * Displays the phone number with optional tel link
+     * 
+     * Attributes:
+     * - tag: HTML tag (span, div, p). Default: span
+     * - class: Optional CSS class
+     * - link: Whether to create tel link: yes or no (default: yes)
+     * - prepend: Text to add before the phone number
+     * - append: Text to add after the phone number
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_phone_number( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'span',
+                'class'   => '',
+                'link'    => 'yes',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'phone_number'
+        );
+        
+        $phone = self::get_phone_number();
+        
+        if ( empty( $phone ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'span', 'div', 'p' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with optional link
+        $phone_html = esc_html( $phone );
+        if ( 'yes' === strtolower( $atts['link'] ) ) {
+            // Create clean tel link by removing spaces and common formatting
+            $tel_link = preg_replace( '/[^0-9+]/', '', $phone );
+            $phone_html = '<a href="' . esc_url( 'tel:' . $tel_link ) . '">' . $phone_html . '</a>';
+        }
+        
+        // Add prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= $phone_html;
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [clerk_name]
+     * Displays the clerk's name
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div). Default: span
+     * - class: Optional CSS class
+     * - prepend: Text to add before the name
+     * - append: Text to add after the name
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_clerk_name( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'span',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'clerk_name'
+        );
+        
+        $name = self::get_clerk_name();
+        
+        if ( empty( $name ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= esc_html( $name );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [office_hours]
+     * Displays the office hours
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div). Default: p
+     * - class: Optional CSS class
+     * - prepend: Text to add before the hours
+     * - append: Text to add after the hours
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_office_hours( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'p',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'office_hours'
+        );
+        
+        $hours = self::get_office_hours();
+        
+        if ( empty( $hours ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'p';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= nl2br( esc_html( $hours ) );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [map_embed]
+     * Displays the map embed code
+     * 
+     * Attributes:
+     * - class: Optional CSS class for wrapper div
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_map_embed( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'class' => '',
+            ),
+            $atts,
+            'map_embed'
+        );
+        
+        $embed = self::get_map_embed();
+        
+        if ( empty( $embed ) ) {
+            return '';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // If it's an iframe, output directly (already sanitized in save)
+        if ( stripos( $embed, '<iframe' ) !== false ) {
+            return '<div' . $class_attr . '>' . $embed . '</div>';
+        }
+        
+        // Otherwise treat as coordinates text
+        return '<div' . $class_attr . '>' . esc_html( $embed ) . '</div>';
+    }
+    
+    /**
+     * Shortcode: [meeting_schedule]
+     * Displays the meeting schedule
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div). Default: p
+     * - class: Optional CSS class
+     * - prepend: Text to add before the schedule
+     * - append: Text to add after the schedule
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_meeting_schedule( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'p',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'meeting_schedule'
+        );
+        
+        $schedule = self::get_meeting_schedule();
+        
+        if ( empty( $schedule ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'p';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= esc_html( $schedule );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [annual_meeting_date]
+     * Displays the annual meeting date
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div). Default: p
+     * - class: Optional CSS class
+     * - prepend: Text to add before the date
+     * - append: Text to add after the date
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_annual_meeting_date( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'p',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'annual_meeting_date'
+        );
+        
+        $date = self::get_annual_meeting_date();
+        
+        if ( empty( $date ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'p';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= esc_html( $date );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [county]
+     * Displays the county name
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div). Default: span
+     * - class: Optional CSS class
+     * - prepend: Text to add before the county
+     * - append: Text to add after the county
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_county( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'span',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'county'
+        );
+        
+        $county = self::get_county();
+        
+        if ( empty( $county ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= esc_html( $county );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
      * Add custom fields to all pages and posts for page builder integration
      * 
      * This method automatically adds council image URLs as custom fields to every page and post,
@@ -1866,6 +3137,79 @@ class Council_Controller {
         } else {
             delete_post_meta( $post->ID, 'council_title_color' );
         }
+        
+        // Get contact & location fields
+        $council_address = self::get_council_address();
+        if ( ! empty( $council_address ) ) {
+            update_post_meta( $post->ID, 'council_address', $council_address );
+        } else {
+            delete_post_meta( $post->ID, 'council_address' );
+        }
+        
+        $meeting_venue_address = self::get_meeting_venue_address();
+        if ( ! empty( $meeting_venue_address ) ) {
+            update_post_meta( $post->ID, 'meeting_venue_address', $meeting_venue_address );
+        } else {
+            delete_post_meta( $post->ID, 'meeting_venue_address' );
+        }
+        
+        $email_address = self::get_email_address();
+        if ( ! empty( $email_address ) ) {
+            update_post_meta( $post->ID, 'email_address', $email_address );
+        } else {
+            delete_post_meta( $post->ID, 'email_address' );
+        }
+        
+        $phone_number = self::get_phone_number();
+        if ( ! empty( $phone_number ) ) {
+            update_post_meta( $post->ID, 'phone_number', $phone_number );
+        } else {
+            delete_post_meta( $post->ID, 'phone_number' );
+        }
+        
+        $clerk_name = self::get_clerk_name();
+        if ( ! empty( $clerk_name ) ) {
+            update_post_meta( $post->ID, 'clerk_name', $clerk_name );
+        } else {
+            delete_post_meta( $post->ID, 'clerk_name' );
+        }
+        
+        $office_hours = self::get_office_hours();
+        if ( ! empty( $office_hours ) ) {
+            update_post_meta( $post->ID, 'office_hours', $office_hours );
+        } else {
+            delete_post_meta( $post->ID, 'office_hours' );
+        }
+        
+        $map_embed = self::get_map_embed();
+        if ( ! empty( $map_embed ) ) {
+            update_post_meta( $post->ID, 'map_embed', $map_embed );
+        } else {
+            delete_post_meta( $post->ID, 'map_embed' );
+        }
+        
+        // Get governance fields
+        $meeting_schedule = self::get_meeting_schedule();
+        if ( ! empty( $meeting_schedule ) ) {
+            update_post_meta( $post->ID, 'meeting_schedule', $meeting_schedule );
+        } else {
+            delete_post_meta( $post->ID, 'meeting_schedule' );
+        }
+        
+        $annual_meeting_date = self::get_annual_meeting_date();
+        if ( ! empty( $annual_meeting_date ) ) {
+            update_post_meta( $post->ID, 'annual_meeting_date', $annual_meeting_date );
+        } else {
+            delete_post_meta( $post->ID, 'annual_meeting_date' );
+        }
+        
+        // Get misc fields
+        $county = self::get_county();
+        if ( ! empty( $county ) ) {
+            update_post_meta( $post->ID, 'county', $county );
+        } else {
+            delete_post_meta( $post->ID, 'county' );
+        }
     }
     
     /**
@@ -1886,7 +3230,7 @@ class Council_Controller {
      */
     public function filter_post_metadata( $value, $object_id, $meta_key, $single ) {
         // Only intercept our specific custom fields
-        $our_fields = array( 'council_hero_image_url', 'council_logo_url', 'parish_name', 'parish_established_year', 'council_title_color' );
+        $our_fields = array( 'council_hero_image_url', 'council_logo_url', 'parish_name', 'parish_established_year', 'council_title_color', 'council_address', 'meeting_venue_address', 'email_address', 'phone_number', 'clerk_name', 'office_hours', 'map_embed', 'meeting_schedule', 'annual_meeting_date', 'county' );
         if ( ! in_array( $meta_key, $our_fields, true ) ) {
             return $value;
         }
@@ -1913,6 +3257,36 @@ class Council_Controller {
                 break;
             case 'council_title_color':
                 $generated_value = self::get_title_color();
+                break;
+            case 'council_address':
+                $generated_value = self::get_council_address();
+                break;
+            case 'meeting_venue_address':
+                $generated_value = self::get_meeting_venue_address();
+                break;
+            case 'email_address':
+                $generated_value = self::get_email_address();
+                break;
+            case 'phone_number':
+                $generated_value = self::get_phone_number();
+                break;
+            case 'clerk_name':
+                $generated_value = self::get_clerk_name();
+                break;
+            case 'office_hours':
+                $generated_value = self::get_office_hours();
+                break;
+            case 'map_embed':
+                $generated_value = self::get_map_embed();
+                break;
+            case 'meeting_schedule':
+                $generated_value = self::get_meeting_schedule();
+                break;
+            case 'annual_meeting_date':
+                $generated_value = self::get_annual_meeting_date();
+                break;
+            case 'county':
+                $generated_value = self::get_county();
                 break;
         }
         
