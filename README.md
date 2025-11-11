@@ -7,6 +7,8 @@ A Must-Use WordPress plugin intended for use on a template parish or town counci
 Council Controller provides a simple admin interface to manage your council's basic information, including:
 - Council Name
 - Council Logo (uploaded via WordPress Media Library)
+- Color Scheme (Primary, Secondary, Tertiary, Heading, and Body colors)
+- CSS Variables for use with page builders and themes
 
 This information can be accessed programmatically and displayed on your website using shortcodes.
 
@@ -27,22 +29,92 @@ The plugin will be automatically activated - no need to activate it through the 
 2. Navigate to **Council Settings** in the admin menu
 3. Enter your council name
 4. Click "Choose Logo" to select or upload a logo from the media library
-5. Click "Save Settings"
+5. Configure your color scheme using the color pickers
+6. Click "Save Settings"
+
+### Color Management & CSS Variables
+
+The plugin provides a color management system that outputs CSS variables for use with page builders and themes:
+
+**Available CSS Variables:**
+- `--council-primary` - Primary brand color
+- `--council-secondary` - Secondary brand color
+- `--council-tertiary` - Tertiary brand color
+- `--council-h1` - H1 heading color
+- `--council-h2` - H2 heading color
+- `--council-h3` - H3 heading color
+- `--council-h4` - H4 heading color
+- `--council-h5` - H5 heading color
+- `--council-h6` - H6 heading color
+- `--council-link` - Link color
+- `--council-menu-link` - Menu link color
+- `--council-title-color` - Title color (for menu text when logo isn't available)
+- `--council-body-text` - Default body text color
+- `--council-button` - Button background color
+- `--council-button-text` - Button text color
+- `--council-button-hover` - Button hover background color
+- `--council-button-text-hover` - Button text hover color
+
+These variables can be used in your theme's CSS or page builder:
+
+```css
+.my-element {
+    background-color: var(--council-primary);
+    color: var(--council-body-text);
+}
+
+h1 {
+    color: var(--council-h1);
+}
+
+h2 {
+    color: var(--council-h2);
+}
+
+a {
+    color: var(--council-link);
+}
+
+nav a, .menu a {
+    color: var(--council-menu-link);
+}
+
+.site-title {
+    color: var(--council-title-color);
+}
+
+button, .btn {
+    background-color: var(--council-button);
+    color: var(--council-button-text);
+}
+
+button:hover, .btn:hover {
+    background-color: var(--council-button-hover);
+    color: var(--council-button-text-hover);
+}
+```
 
 ### Using Shortcodes
 
-The plugin provides three shortcodes to display council information on your website. **Complete documentation with examples is available within the WordPress admin interface on the Council Settings page.**
+The plugin provides four shortcodes to display council information on your website. **Complete documentation with examples is available within the WordPress admin interface on the Council Settings page.**
 
 #### `[council_name]`
 Displays the council name.
 
 **Attributes:**
-- `class` - Optional CSS class to add to the wrapper span
+- `tag` - HTML tag to wrap the name: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `span`)
+- `class` - Optional CSS class to add to the wrapper element
+- `prepend` - Text to add before the council name
+- `append` - Text to add after the council name
 
 **Examples:**
 ```
 [council_name]
-[council_name class="my-council-name"]
+[council_name tag="h1"]
+[council_name tag="h2" class="my-council-name"]
+[council_name tag="h1" prepend="Welcome to"]
+[council_name prepend="Official Site of" tag="h2"]
+[council_name tag="p" append="- Official Website"]
 ```
 
 #### `[council_logo]`
@@ -52,12 +124,15 @@ Displays the council logo.
 - `size` - Image size: `thumbnail`, `medium`, `large`, or `full` (default: `full`)
 - `class` - Optional CSS class to add to the image
 - `link` - Whether to link to the home page: `yes` or `no` (default: `no`)
+- `aria_label` - ARIA label for accessibility. If not provided, uses the council name
 
 **Examples:**
 ```
 [council_logo]
 [council_logo size="medium"]
 [council_logo size="large" class="header-logo" link="yes"]
+[council_logo aria_label="City Council Logo"]
+[council_logo size="medium" aria_label="Official Council Emblem"]
 ```
 
 #### `[council_info]`
@@ -67,15 +142,185 @@ Displays both council name and logo together in a formatted block.
 - `logo_size` - Logo image size: `thumbnail`, `medium`, `large`, or `full` (default: `medium`)
 - `show_name` - Show the name: `yes` or `no` (default: `yes`)
 - `show_logo` - Show the logo: `yes` or `no` (default: `yes`)
+- `name_tag` - HTML tag to wrap the name: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `h2`)
 - `class` - Optional CSS class to add to the wrapper div
+- `prepend` - Text to add before the council name
+- `append` - Text to add after the council name
 
 **Examples:**
 ```
 [council_info]
 [council_info logo_size="large"]
 [council_info show_logo="no"]
+[council_info name_tag="h1"]
 [council_info logo_size="thumbnail" class="sidebar-council"]
+[council_info name_tag="h1" prepend="Welcome to"]
+[council_info prepend="Official Site of" logo_size="medium"]
 ```
+
+#### `[council_hero_image]`
+Returns the URL of the hero image with no HTML markup. Perfect for use in CSS background-image properties or PHP background styles.
+
+**Attributes:**
+- `size` - Image size: `thumbnail`, `medium`, `large`, or `full` (default: `full`)
+
+**Examples:**
+```
+[council_hero_image]
+[council_hero_image size="large"]
+```
+
+**Usage in PHP for background images:**
+```php
+<?php
+// Get the hero image URL
+$image_url = do_shortcode('[council_hero_image]');
+
+// Clean it up just in case
+$image_url = trim($image_url);
+
+// Use as background style
+if (!empty($image_url)) {
+    echo '<div style="background-image: url(' . esc_url($image_url) . ');">';
+    // Your content here
+    echo '</div>';
+}
+?>
+```
+
+**Usage in custom CSS:**
+```php
+<?php if ($hero_url = do_shortcode('[council_hero_image size="full"]')): ?>
+<style>
+.hero-section {
+    background-image: url('<?php echo esc_url($hero_url); ?>');
+    background-size: cover;
+    background-position: center;
+}
+</style>
+<?php endif; ?>
+```
+
+#### `[council_hero_background]`
+**New in v1.10.0:** Wraps content with a div that has the hero image as a full-width background. Perfect for use with page builder shortcode wrappers like Breakdance.
+
+**Attributes:**
+- `size` - Image size: `thumbnail`, `medium`, `large`, or `full` (default: `full`)
+- `bg_size` - CSS background-size: `cover`, `contain`, `auto`, or custom like `"100% 100%"` (default: `cover`)
+- `bg_repeat` - CSS background-repeat: `no-repeat`, `repeat`, `repeat-x`, `repeat-y` (default: `no-repeat`)
+- `bg_position` - CSS background-position: `center`, `top`, `bottom`, `left`, `right`, or custom like `"50% 50%"` (default: `center`)
+- `bg_attachment` - CSS background-attachment: `scroll`, `fixed`, `local` (default: `scroll`)
+- `min_height` - Minimum height of the section (e.g., `"400px"`, `"50vh"`)
+- `class` - Optional CSS class to add to the wrapper div
+
+**Examples:**
+```
+[council_hero_background]Your content here[/council_hero_background]
+
+[council_hero_background bg_size="cover" bg_position="center"]
+  <h1>Welcome to our council</h1>
+  <p>Some intro text</p>
+[/council_hero_background]
+
+[council_hero_background min_height="500px" bg_attachment="fixed"]
+  Your hero content
+[/council_hero_background]
+
+[council_hero_background class="hero-section" bg_size="cover" bg_position="top center"]
+  Page content with parallax-style background
+[/council_hero_background]
+```
+
+**Usage in Breakdance:**
+1. Add a "Shortcode Wrapper" element
+2. Enter shortcode: `[council_hero_background bg_size="cover" min_height="600px"]`
+3. Add your content inside the wrapper
+4. The hero image will be applied as the full-width background
+
+**Styling Tips:**
+- Use `bg_attachment="fixed"` for parallax scrolling effect
+- Combine with `min_height` to ensure visible background area
+- Use `bg_position="top"` or `"bottom"` to control focal point
+- Add `class` attribute for additional custom styling
+
+#### `[parish_name]`
+**New in v1.11.0:** Displays the parish name.
+
+**Attributes:**
+- `tag` - HTML tag to wrap the name: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `span`)
+- `class` - Optional CSS class
+- `prepend` - Text to add before the parish name
+- `append` - Text to add after the parish name
+
+**Examples:**
+```
+[parish_name]
+[parish_name tag="h2"]
+[parish_name tag="p" class="parish-heading"]
+[parish_name tag="h1" prepend="Welcome to"]
+```
+
+#### `[parish_established_year]`
+**New in v1.11.0:** Displays the year the parish was established.
+
+**Attributes:**
+- `tag` - HTML tag to wrap the year: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `span`)
+- `class` - Optional CSS class
+- `prepend` - Text to add before the year
+- `append` - Text to add after the year
+
+**Examples:**
+```
+[parish_established_year]
+[parish_established_year tag="span" prepend="Est. "]
+[parish_established_year tag="p" class="est-year"]
+```
+
+### Page Builder Integration via Custom Fields
+
+**New in v1.9.0 (Fixed in v1.9.1):** Hero image and logo URLs are automatically added as custom fields to all pages and posts, making them accessible through page builder custom field/dynamic data features.
+
+**Available Custom Fields:**
+- `council_hero_image_url` - Hero image URL (full size)
+- `council_logo_url` - Council logo URL (full size)
+- `parish_name` - Parish name text
+- `parish_established_year` - Parish established year
+- `council_title_color` - Title color hex value
+
+**Technical Note:** Custom fields are provided dynamically via WordPress metadata filters, ensuring they're always available on both frontend and backend, even before being written to the database.
+
+**How to Use in Page Builders:**
+
+*Elementor:*
+1. Add a Dynamic Tags element
+2. Select "Post" → "Custom Field"
+3. Enter field name: `council_hero_image_url` or `council_logo_url`
+
+*Beaver Builder:*
+1. In any field, click the "+" icon
+2. Select "Field Connections" → "Custom Field"
+3. Enter field name: `council_hero_image_url` or `council_logo_url`
+
+*Divi:*
+1. In any module field, click the dynamic content icon
+2. Select "Post Custom Field"
+3. Enter field name: `council_hero_image_url` or `council_logo_url`
+
+*Gutenberg:*
+1. Use block bindings or custom field blocks
+2. Reference field: `council_hero_image_url` or `council_logo_url`
+
+**Example - Using in Background Image Field:**
+- Field: Background Image URL
+- Dynamic Data: Custom Field → `council_hero_image_url`
+- The hero image will automatically be used as the background
+
+**Benefits:**
+- ✅ Native page builder integration
+- ✅ No custom code required
+- ✅ Fields update automatically when settings change
+- ✅ Works with all major page builders
+- ✅ Accessible through standard custom field features
 
 ### Accessing Settings Programmatically
 
@@ -90,19 +335,40 @@ $logo_url = Council_Controller::get_council_logo_url();
 
 // Get council logo attachment ID
 $logo_id = Council_Controller::get_council_logo_id();
+
+// Get hero image URL (specify size: thumbnail, medium, large, full)
+$hero_url = Council_Controller::get_hero_image_url('full');
+
+// Get hero image attachment ID
+$hero_id = Council_Controller::get_hero_image_id();
 ```
 
 ## Features
 
-- **Shortcodes**: Three shortcodes to display council information anywhere on your site
-  - `[council_name]` - Display council name
-  - `[council_logo]` - Display council logo with customizable size and styling
+- **Shortcodes**: Four shortcodes to display council information anywhere on your site
+  - `[council_name]` - Display council name with customizable HTML tags, prepend/append text
+  - `[council_logo]` - Display council logo with customizable size, styling, and ARIA labels
   - `[council_info]` - Display name and logo together
+  - `[council_hero_image]` - Return hero image URL for background/banner usage
+- **Hero Image Management**: Upload and manage a hero/banner image for site backgrounds
+  - Media library integration for easy image selection
+  - Returns clean URL output (no HTML markup) for flexible usage
+  - Perfect for CSS background-image properties or PHP background styles
+- **Color Management**: Configure site-wide color scheme
+  - Primary, Secondary, and Tertiary brand colors
+  - Individual heading colors (H1-H6)
+  - Link color
+  - Menu link color
+  - Body text color
+  - Button colors (background, text, hover states)
+  - CSS variables output for page builder integration
 - **WordPress Settings API Integration**: Proper settings management using WordPress best practices
-- **Media Library Integration**: Easy logo selection using the native WordPress media uploader
+- **Media Library Integration**: Easy logo and hero image selection using the native WordPress media uploader
+- **Color Picker Integration**: User-friendly color selection with WordPress color picker
 - **Sanitization & Security**: All inputs are properly sanitized and escaped
 - **Translation Ready**: All strings are internationalized and ready for translation
 - **Clean UI**: Simple, intuitive admin interface following WordPress design patterns
+- **Accessibility**: ARIA label support for improved screen reader compatibility
 
 ## Requirements
 
@@ -113,7 +379,7 @@ $logo_id = Council_Controller::get_council_logo_id();
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.1.0
+**Current Version:** 1.8.0
 
 ### Version Format
 
