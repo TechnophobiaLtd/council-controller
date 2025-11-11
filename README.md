@@ -196,6 +196,48 @@ if (!empty($image_url)) {
 <?php endif; ?>
 ```
 
+#### `[council_hero_background]`
+**New in v1.10.0:** Wraps content with a div that has the hero image as a full-width background. Perfect for use with page builder shortcode wrappers like Breakdance.
+
+**Attributes:**
+- `size` - Image size: `thumbnail`, `medium`, `large`, or `full` (default: `full`)
+- `bg_size` - CSS background-size: `cover`, `contain`, `auto`, or custom like `"100% 100%"` (default: `cover`)
+- `bg_repeat` - CSS background-repeat: `no-repeat`, `repeat`, `repeat-x`, `repeat-y` (default: `no-repeat`)
+- `bg_position` - CSS background-position: `center`, `top`, `bottom`, `left`, `right`, or custom like `"50% 50%"` (default: `center`)
+- `bg_attachment` - CSS background-attachment: `scroll`, `fixed`, `local` (default: `scroll`)
+- `min_height` - Minimum height of the section (e.g., `"400px"`, `"50vh"`)
+- `class` - Optional CSS class to add to the wrapper div
+
+**Examples:**
+```
+[council_hero_background]Your content here[/council_hero_background]
+
+[council_hero_background bg_size="cover" bg_position="center"]
+  <h1>Welcome to our council</h1>
+  <p>Some intro text</p>
+[/council_hero_background]
+
+[council_hero_background min_height="500px" bg_attachment="fixed"]
+  Your hero content
+[/council_hero_background]
+
+[council_hero_background class="hero-section" bg_size="cover" bg_position="top center"]
+  Page content with parallax-style background
+[/council_hero_background]
+```
+
+**Usage in Breakdance:**
+1. Add a "Shortcode Wrapper" element
+2. Enter shortcode: `[council_hero_background bg_size="cover" min_height="600px"]`
+3. Add your content inside the wrapper
+4. The hero image will be applied as the full-width background
+
+**Styling Tips:**
+- Use `bg_attachment="fixed"` for parallax scrolling effect
+- Combine with `min_height` to ensure visible background area
+- Use `bg_position="top"` or `"bottom"` to control focal point
+- Add `class` attribute for additional custom styling
+
 ### Page Builder Integration via Custom Fields
 
 **New in v1.9.0 (Fixed in v1.9.1):** Hero image and logo URLs are automatically added as custom fields to all pages and posts, making them accessible through page builder custom field/dynamic data features.

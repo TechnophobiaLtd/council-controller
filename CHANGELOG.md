@@ -5,6 +5,30 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.10.0] - 2025-11-11
+
+### Added
+- **`[council_hero_background]` Shortcode**: New shortcode for wrapping content with hero image as full-width background
+  - Perfect for page builder shortcode wrappers (e.g., Breakdance Shortcode Wrapper)
+  - Configurable background properties:
+    - `size` - Image size: thumbnail, medium, large, full (default: full)
+    - `bg_size` - CSS background-size: cover, contain, auto, or custom (default: cover)
+    - `bg_repeat` - CSS background-repeat: no-repeat, repeat, repeat-x, repeat-y (default: no-repeat)
+    - `bg_position` - CSS background-position: center, top, bottom, left, right, or custom (default: center)
+    - `bg_attachment` - CSS background-attachment: scroll, fixed, local (default: scroll)
+    - `min_height` - Minimum section height (e.g., "400px", "50vh")
+    - `class` - Optional CSS class for wrapper div
+  - Supports nested shortcodes in content
+  - Fully responsive with 100% width
+  - Usage: `[council_hero_background bg_size="cover" min_height="500px"]Your content[/council_hero_background]`
+
+### Technical Details
+- Added `shortcode_hero_background()` method with comprehensive background styling controls
+- All CSS properties sanitized and escaped for security
+- Empty content handling (returns empty string if no hero image set)
+- Documentation automatically added to admin interface
+- PHPDoc comments on new method
+
 ## [1.9.1] - 2025-11-11
 
 ### Fixed

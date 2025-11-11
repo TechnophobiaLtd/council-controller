@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.9.1
+ * Version: 1.10.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -192,6 +192,46 @@ class Council_Controller {
                     '[council_hero_image]',
                     '[council_hero_image size="large"]',
                     '[council_hero_image size="full"]',
+                ),
+            ),
+            'council_hero_background' => array(
+                'tag'         => 'council_hero_background',
+                'description' => __( 'Wraps content with a div that has the hero image as a full-width background. Perfect for use with page builder shortcode wrappers like Breakdance.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'size',
+                        'description' => __( 'Image size: thumbnail, medium, large, or full (default: full)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'bg_size',
+                        'description' => __( 'CSS background-size: cover, contain, auto, or specific size like "100% 100%" (default: cover)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'bg_repeat',
+                        'description' => __( 'CSS background-repeat: no-repeat, repeat, repeat-x, repeat-y (default: no-repeat)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'bg_position',
+                        'description' => __( 'CSS background-position: center, top, bottom, left, right, or specific like "50% 50%" (default: center)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'bg_attachment',
+                        'description' => __( 'CSS background-attachment: scroll, fixed, local (default: scroll)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper div', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'min_height',
+                        'description' => __( 'Minimum height of the background section (e.g., "400px", "50vh"). Default: none', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[council_hero_background]Your content here[/council_hero_background]',
+                    '[council_hero_background bg_size="cover" bg_position="center"]Content[/council_hero_background]',
+                    '[council_hero_background min_height="500px" bg_attachment="fixed"]Content[/council_hero_background]',
+                    '[council_hero_background class="hero-section" bg_size="cover" bg_position="top center"]Content[/council_hero_background]',
                 ),
             ),
         );
@@ -1155,6 +1195,7 @@ class Council_Controller {
         add_shortcode( 'council_logo', array( $this, 'shortcode_council_logo' ) );
         add_shortcode( 'council_info', array( $this, 'shortcode_council_info' ) );
         add_shortcode( 'council_hero_image', array( $this, 'shortcode_hero_image' ) );
+        add_shortcode( 'council_hero_background', array( $this, 'shortcode_hero_background' ) );
     }
     
     /**
@@ -1387,6 +1428,77 @@ class Council_Controller {
         
         // Return just the URL (no HTML markup)
         return esc_url( $hero_url );
+    }
+    
+    /**
+     * Shortcode: [council_hero_background]
+     * Wraps content with a div that has the hero image as a background
+     * Perfect for page builder shortcode wrappers like Breakdance
+     * 
+     * Attributes:
+     * - size: Image size (default: full)
+     * - bg_size: CSS background-size (default: cover)
+     * - bg_repeat: CSS background-repeat (default: no-repeat)
+     * - bg_position: CSS background-position (default: center)
+     * - bg_attachment: CSS background-attachment (default: scroll)
+     * - class: CSS class to add to wrapper
+     * - min_height: Minimum height of the section (optional)
+     * 
+     * @since 1.10.0
+     */
+    public function shortcode_hero_background( $atts, $content = null ) {
+        $atts = shortcode_atts(
+            array(
+                'size'          => 'full',
+                'bg_size'       => 'cover',
+                'bg_repeat'     => 'no-repeat',
+                'bg_position'   => 'center',
+                'bg_attachment' => 'scroll',
+                'class'         => '',
+                'min_height'    => '',
+            ),
+            $atts,
+            'council_hero_background'
+        );
+        
+        // Get the hero image URL
+        $hero_url = self::get_hero_image_url( $atts['size'] );
+        
+        // Return empty string if no hero image is set
+        if ( empty( $hero_url ) ) {
+            return '';
+        }
+        
+        // Sanitize and validate CSS properties
+        $bg_size = esc_attr( trim( $atts['bg_size'] ) );
+        $bg_repeat = esc_attr( trim( $atts['bg_repeat'] ) );
+        $bg_position = esc_attr( trim( $atts['bg_position'] ) );
+        $bg_attachment = esc_attr( trim( $atts['bg_attachment'] ) );
+        $min_height = ! empty( $atts['min_height'] ) ? esc_attr( trim( $atts['min_height'] ) ) : '';
+        
+        // Build inline styles
+        $styles = array(
+            'background-image: url(' . esc_url( $hero_url ) . ')',
+            'background-size: ' . $bg_size,
+            'background-repeat: ' . $bg_repeat,
+            'background-position: ' . $bg_position,
+            'background-attachment: ' . $bg_attachment,
+            'width: 100%',
+        );
+        
+        // Add min-height if specified
+        if ( ! empty( $min_height ) ) {
+            $styles[] = 'min-height: ' . $min_height;
+        }
+        
+        $style_attr = 'style="' . implode( '; ', $styles ) . ';"';
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Process the content (support for nested shortcodes)
+        $content = do_shortcode( $content );
+        
+        // Return the wrapped content
+        return '<div' . $class_attr . ' ' . $style_attr . '>' . $content . '</div>';
     }
     
     /**
