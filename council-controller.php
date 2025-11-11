@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.8.2
+ * Version: 1.9.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -59,6 +59,9 @@ class Council_Controller {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
         add_action( 'init', array( $this, 'register_shortcodes' ) );
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
+        
+        // Add custom fields to all pages and posts for page builder integration
+        add_action( 'wp', array( $this, 'add_custom_fields_to_posts' ) );
     }
     
     /**
@@ -1381,77 +1384,58 @@ class Council_Controller {
         // Return just the URL (no HTML markup)
         return esc_url( $hero_url );
     }
+    
+    /**
+     * Add custom fields to all pages and posts for page builder integration
+     * 
+     * This method automatically adds council image URLs as custom fields to every page and post,
+     * making them accessible to page builders through WordPress custom fields.
+     * 
+     * Custom fields added:
+     * - council_hero_image_url: URL of the hero image (full size)
+     * - council_logo_url: URL of the council logo (full size)
+     * 
+     * Page builders can access these fields using their custom field/dynamic data features:
+     * - Elementor: Dynamic Tags > Post > Custom Field
+     * - Beaver Builder: Field Connections > Custom Field
+     * - Divi: Dynamic Content > Post Custom Field
+     * - Gutenberg: Block bindings or custom field blocks
+     * 
+     * @since 1.9.0
+     * @return void
+     */
+    public function add_custom_fields_to_posts() {
+        // Only run on singular posts and pages (not archives)
+        if ( ! is_singular() ) {
+            return;
+        }
+        
+        global $post;
+        
+        // Ensure we have a valid post object
+        if ( ! $post || ! isset( $post->ID ) ) {
+            return;
+        }
+        
+        // Get hero image URL (full size)
+        $hero_url = self::get_hero_image_url( 'full' );
+        if ( ! empty( $hero_url ) ) {
+            update_post_meta( $post->ID, 'council_hero_image_url', $hero_url );
+        } else {
+            // Delete the custom field if no hero image is set
+            delete_post_meta( $post->ID, 'council_hero_image_url' );
+        }
+        
+        // Get logo URL (full size)
+        $logo_url = self::get_council_logo_url( 'full' );
+        if ( ! empty( $logo_url ) ) {
+            update_post_meta( $post->ID, 'council_logo_url', $logo_url );
+        } else {
+            // Delete the custom field if no logo is set
+            delete_post_meta( $post->ID, 'council_logo_url' );
+        }
+    }
 }
 
 // Initialize the plugin
 add_action( 'plugins_loaded', array( 'Council_Controller', 'get_instance' ) );
-
-/**
- * Global helper function for page builders to get council hero image URL
- * 
- * This function provides a simple way for page builders (like Elementor, Beaver Builder, etc.)
- * to access the hero image URL directly in PHP without using do_shortcode().
- * 
- * Usage in page builders:
- * - Elementor: Dynamic Tags > PHP > Return Value
- * - Beaver Builder: PHP field
- * - Divi: Dynamic Content
- * 
- * Example:
- * <?php
- * $hero_url = council_controller_get_hero_image_url();
- * if ( ! empty( $hero_url ) ) {
- *     echo '<div style="background-image: url(' . esc_url( $hero_url ) . ');">';
- *     // Your content
- *     echo '</div>';
- * }
- * ?>
- * 
- * @param string $size Image size (thumbnail, medium, large, full). Default: 'full'
- * @return string Hero image URL or empty string if not set
- * @since 1.8.2
- */
-function council_controller_get_hero_image_url( $size = 'full' ) {
-    return Council_Controller::get_hero_image_url( $size );
-}
-
-/**
- * Global helper function for page builders to get council name
- * 
- * This function provides a simple way for page builders to access the council name
- * directly in PHP without using do_shortcode().
- * 
- * Example:
- * <?php
- * $council_name = council_controller_get_council_name();
- * echo '<h1>Welcome to ' . esc_html( $council_name ) . '</h1>';
- * ?>
- * 
- * @return string Council name or empty string if not set
- * @since 1.8.2
- */
-function council_controller_get_council_name() {
-    return Council_Controller::get_council_name();
-}
-
-/**
- * Global helper function for page builders to get council logo URL
- * 
- * This function provides a simple way for page builders to access the logo URL
- * directly in PHP without using do_shortcode().
- * 
- * Example:
- * <?php
- * $logo_url = council_controller_get_logo_url( 'medium' );
- * if ( ! empty( $logo_url ) ) {
- *     echo '<img src="' . esc_url( $logo_url ) . '" alt="Council Logo">';
- * }
- * ?>
- * 
- * @param string $size Image size (thumbnail, medium, large, full). Default: 'full'
- * @return string Logo URL or empty string if not set
- * @since 1.8.2
- */
-function council_controller_get_logo_url( $size = 'full' ) {
-    return Council_Controller::get_council_logo_url( $size );
-}

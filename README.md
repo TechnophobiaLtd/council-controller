@@ -183,21 +183,6 @@ if (!empty($image_url)) {
 ?>
 ```
 
-**Better: Using Global Helper Function (Recommended for Page Builders):**
-```php
-<?php
-// Direct access - no do_shortcode() needed
-$hero_url = council_controller_get_hero_image_url();
-
-// Use directly in page builder PHP fields (Elementor, Beaver Builder, etc.)
-if (!empty($hero_url)) {
-    echo '<div style="background-image: url(' . esc_url($hero_url) . ');">';
-    // Your content
-    echo '</div>';
-}
-?>
-```
-
 **Usage in custom CSS:**
 ```php
 <?php if ($hero_url = do_shortcode('[council_hero_image size="full"]')): ?>
@@ -211,47 +196,46 @@ if (!empty($hero_url)) {
 <?php endif; ?>
 ```
 
-### Global Helper Functions for Page Builders
+### Page Builder Integration via Custom Fields
 
-For easier integration with page builders (Elementor, Beaver Builder, Divi, etc.), the plugin provides direct PHP functions that don't require `do_shortcode()`:
+**New in v1.9.0:** Hero image and logo URLs are automatically added as custom fields to all pages and posts, making them accessible through page builder custom field/dynamic data features.
 
-```php
-// Get hero image URL (returns clean URL string)
-$hero_url = council_controller_get_hero_image_url();           // Full size
-$hero_url = council_controller_get_hero_image_url('large');    // Large size
-$hero_url = council_controller_get_hero_image_url('medium');   // Medium size
+**Available Custom Fields:**
+- `council_hero_image_url` - Hero image URL (full size)
+- `council_logo_url` - Council logo URL (full size)
 
-// Get council name (returns string)
-$council_name = council_controller_get_council_name();
+**How to Use in Page Builders:**
 
-// Get council logo URL (returns clean URL string)
-$logo_url = council_controller_get_logo_url();                // Full size
-$logo_url = council_controller_get_logo_url('medium');        // Medium size
-```
+*Elementor:*
+1. Add a Dynamic Tags element
+2. Select "Post" → "Custom Field"
+3. Enter field name: `council_hero_image_url` or `council_logo_url`
 
-**Page Builder Integration Examples:**
+*Beaver Builder:*
+1. In any field, click the "+" icon
+2. Select "Field Connections" → "Custom Field"
+3. Enter field name: `council_hero_image_url` or `council_logo_url`
 
-*Elementor (Dynamic Tags > PHP > Return Value):*
-```php
-return council_controller_get_hero_image_url();
-```
+*Divi:*
+1. In any module field, click the dynamic content icon
+2. Select "Post Custom Field"
+3. Enter field name: `council_hero_image_url` or `council_logo_url`
 
-*Beaver Builder (PHP field):*
-```php
-$hero_url = council_controller_get_hero_image_url();
-```
+*Gutenberg:*
+1. Use block bindings or custom field blocks
+2. Reference field: `council_hero_image_url` or `council_logo_url`
 
-*Divi (Dynamic Content):*
-```php
-<?php echo council_controller_get_hero_image_url(); ?>
-```
+**Example - Using in Background Image Field:**
+- Field: Background Image URL
+- Dynamic Data: Custom Field → `council_hero_image_url`
+- The hero image will automatically be used as the background
 
 **Benefits:**
-- No `do_shortcode()` overhead
-- No `trim()` needed - returns clean values
-- Simpler, more readable code
-- Direct access to data
-- Type-safe (always returns string)
+- ✅ Native page builder integration
+- ✅ No custom code required
+- ✅ Fields update automatically when settings change
+- ✅ Works with all major page builders
+- ✅ Accessible through standard custom field features
 
 ### Accessing Settings Programmatically
 

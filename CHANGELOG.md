@@ -5,6 +5,31 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0] - 2025-11-11
+
+### Added
+- **Custom Fields for Page Builder Integration**: Hero image and logo URLs now automatically added as custom fields to all pages and posts
+  - `council_hero_image_url` - Hero image URL (full size)
+  - `council_logo_url` - Council logo URL (full size)
+  - Accessible through page builder custom field/dynamic data features:
+    - Elementor: Dynamic Tags > Post > Custom Field
+    - Beaver Builder: Field Connections > Custom Field
+    - Divi: Dynamic Content > Post Custom Field
+    - Gutenberg: Block bindings or custom field blocks
+  - Fields automatically update when images change in settings
+  - Fields automatically remove when images are removed from settings
+
+### Removed
+- **Deprecated Global Helper Functions**: Removed PHP helper functions that weren't working well with page builders
+  - Removed `council_controller_get_hero_image_url()`
+  - Removed `council_controller_get_council_name()`
+  - Removed `council_controller_get_logo_url()`
+  - Replaced with custom fields approach for better page builder compatibility
+
+### Changed
+- Version bumped to 1.9.0 (MINOR version due to removed deprecated functions)
+- Improved page builder integration approach using WordPress custom fields
+
 ## [1.8.2] - 2025-11-10
 
 ### Added
