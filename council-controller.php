@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.10.0
+ * Version: 1.11.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -234,6 +234,61 @@ class Council_Controller {
                     '[council_hero_background class="hero-section" bg_size="cover" bg_position="top center"]Content[/council_hero_background]',
                 ),
             ),
+            'parish_name' => array(
+                'tag'         => 'parish_name',
+                'description' => __( 'Displays the parish name.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the name: h1, h2, h3, h4, h5, h6, p, span, or div (default: span)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the parish name', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the parish name', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[parish_name]',
+                    '[parish_name tag="h2"]',
+                    '[parish_name tag="p" class="parish-heading"]',
+                    '[parish_name tag="h1" prepend="Welcome to"]',
+                ),
+            ),
+            'parish_established_year' => array(
+                'tag'         => 'parish_established_year',
+                'description' => __( 'Displays the parish established year.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the year: h1, h2, h3, h4, h5, h6, p, span, or div (default: span)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'prepend',
+                        'description' => __( 'Text to add before the year', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'append',
+                        'description' => __( 'Text to add after the year', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[parish_established_year]',
+                    '[parish_established_year tag="span" prepend="Est. "]',
+                    '[parish_established_year tag="p" class="est-year"]',
+                ),
+            ),
         );
         
         /**
@@ -296,6 +351,22 @@ class Council_Controller {
             'hero_image',
             __( 'Hero Image', 'council-controller' ),
             array( $this, 'render_hero_image_field' ),
+            'council-settings',
+            'council_controller_main_section'
+        );
+        
+        add_settings_field(
+            'parish_name',
+            __( 'Parish Name', 'council-controller' ),
+            array( $this, 'render_parish_name_field' ),
+            'council-settings',
+            'council_controller_main_section'
+        );
+        
+        add_settings_field(
+            'parish_established_year',
+            __( 'Parish Established Year', 'council-controller' ),
+            array( $this, 'render_parish_established_year_field' ),
             'council-settings',
             'council_controller_main_section'
         );
@@ -397,6 +468,14 @@ class Council_Controller {
         );
         
         add_settings_field(
+            'title_color',
+            __( 'Title Color', 'council-controller' ),
+            array( $this, 'render_title_color_field' ),
+            'council-settings',
+            'council_controller_colors_section'
+        );
+        
+        add_settings_field(
             'body_color',
             __( 'Body Text Color', 'council-controller' ),
             array( $this, 'render_body_color_field' ),
@@ -462,8 +541,16 @@ class Council_Controller {
             $sanitized['hero_image'] = absint( $input['hero_image'] );
         }
         
+        if ( isset( $input['parish_name'] ) ) {
+            $sanitized['parish_name'] = sanitize_text_field( $input['parish_name'] );
+        }
+        
+        if ( isset( $input['parish_established_year'] ) ) {
+            $sanitized['parish_established_year'] = sanitize_text_field( $input['parish_established_year'] );
+        }
+        
         // Sanitize color fields
-        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'h1_color', 'h2_color', 'h3_color', 'h4_color', 'h5_color', 'h6_color', 'link_color', 'menu_link_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
+        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'h1_color', 'h2_color', 'h3_color', 'h4_color', 'h5_color', 'h6_color', 'link_color', 'menu_link_color', 'title_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
         foreach ( $color_fields as $field ) {
             if ( isset( $input[ $field ] ) ) {
                 $sanitized[ $field ] = sanitize_hex_color( $input[ $field ] );
@@ -664,6 +751,42 @@ class Council_Controller {
                 <?php esc_html_e( 'Upload or select a hero image from the media library. Use the [council_hero_image] shortcode to get the image URL for backgrounds.', 'council-controller' ); ?>
             </p>
         </div>
+        <?php
+    }
+    
+    /**
+     * Render parish name field
+     */
+    public function render_parish_name_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['parish_name'] ) ? $options['parish_name'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[parish_name]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( 'Example Parish', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'Enter the name of the parish.', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
+     * Render parish established year field
+     */
+    public function render_parish_established_year_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $value = isset( $options['parish_established_year'] ) ? $options['parish_established_year'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[parish_established_year]" 
+               value="<?php echo esc_attr( $value ); ?>" 
+               class="regular-text" 
+               placeholder="<?php esc_attr_e( '1850', 'council-controller' ); ?>" />
+        <p class="description">
+            <?php esc_html_e( 'Enter the year the parish was established.', 'council-controller' ); ?>
+        </p>
         <?php
     }
     
@@ -884,6 +1007,25 @@ class Council_Controller {
     }
     
     /**
+     * Render title color field
+     */
+    public function render_title_color_field() {
+        $options = get_option( self::OPTION_NAME, array() );
+        $title_color = isset( $options['title_color'] ) ? $options['title_color'] : '';
+        ?>
+        <input type="text" 
+               name="<?php echo esc_attr( self::OPTION_NAME ); ?>[title_color]" 
+               id="title_color" 
+               value="<?php echo esc_attr( $title_color ); ?>" 
+               class="council-color-picker" 
+               data-default-color="" />
+        <p class="description">
+            <?php esc_html_e( 'Title color (intended for text in menu if logo isn\'t available). Available as CSS variable: --council-title-color', 'council-controller' ); ?>
+        </p>
+        <?php
+    }
+    
+    /**
      * Render body color field
      */
     public function render_body_color_field() {
@@ -1099,6 +1241,10 @@ class Council_Controller {
             $css_vars[] = '--council-menu-link: ' . esc_attr( $options['menu_link_color'] );
         }
         
+        if ( ! empty( $options['title_color'] ) ) {
+            $css_vars[] = '--council-title-color: ' . esc_attr( $options['title_color'] );
+        }
+        
         if ( ! empty( $options['body_color'] ) ) {
             $css_vars[] = '--council-body-text: ' . esc_attr( $options['body_color'] );
         }
@@ -1188,6 +1334,36 @@ class Council_Controller {
     }
     
     /**
+     * Get parish name
+     * 
+     * @return string Parish name or empty string
+     */
+    public static function get_parish_name() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['parish_name'] ) ? $options['parish_name'] : '';
+    }
+    
+    /**
+     * Get parish established year
+     * 
+     * @return string Parish established year or empty string
+     */
+    public static function get_parish_established_year() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['parish_established_year'] ) ? $options['parish_established_year'] : '';
+    }
+    
+    /**
+     * Get title color
+     * 
+     * @return string Title color hex value or empty string
+     */
+    public static function get_title_color() {
+        $options = get_option( self::OPTION_NAME, array() );
+        return isset( $options['title_color'] ) ? $options['title_color'] : '';
+    }
+    
+    /**
      * Register shortcodes
      */
     public function register_shortcodes() {
@@ -1196,6 +1372,8 @@ class Council_Controller {
         add_shortcode( 'council_info', array( $this, 'shortcode_council_info' ) );
         add_shortcode( 'council_hero_image', array( $this, 'shortcode_hero_image' ) );
         add_shortcode( 'council_hero_background', array( $this, 'shortcode_hero_background' ) );
+        add_shortcode( 'parish_name', array( $this, 'shortcode_parish_name' ) );
+        add_shortcode( 'parish_established_year', array( $this, 'shortcode_parish_established_year' ) );
     }
     
     /**
@@ -1502,6 +1680,120 @@ class Council_Controller {
     }
     
     /**
+     * Shortcode: [parish_name]
+     * Displays the parish name
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div). Default: span
+     * - class: Optional CSS class
+     * - prepend: Text to add before the parish name
+     * - append: Text to add after the parish name
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_parish_name( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'span',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'parish_name'
+        );
+        
+        $parish_name = self::get_parish_name();
+        
+        // Return empty string if no parish name is set
+        if ( empty( $parish_name ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        // Fallback to span if invalid tag
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span';
+        }
+        
+        // Sanitize class attribute
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= esc_html( $parish_name );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [parish_established_year]
+     * Displays the parish established year
+     * 
+     * Attributes:
+     * - tag: HTML tag (h1-h6, p, span, div). Default: span
+     * - class: Optional CSS class
+     * - prepend: Text to add before the year
+     * - append: Text to add after the year
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_parish_established_year( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'     => 'span',
+                'class'   => '',
+                'prepend' => '',
+                'append'  => '',
+            ),
+            $atts,
+            'parish_established_year'
+        );
+        
+        $year = self::get_parish_established_year();
+        
+        // Return empty string if no year is set
+        if ( empty( $year ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'div' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        // Fallback to span if invalid tag
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span';
+        }
+        
+        // Sanitize class attribute
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the content with prepend/append
+        $content = '';
+        if ( ! empty( $atts['prepend'] ) ) {
+            $content .= esc_html( $atts['prepend'] ) . ' ';
+        }
+        $content .= esc_html( $year );
+        if ( ! empty( $atts['append'] ) ) {
+            $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
      * Add custom fields to all pages and posts for page builder integration
      * 
      * This method automatically adds council image URLs as custom fields to every page and post,
@@ -1550,6 +1842,30 @@ class Council_Controller {
             // Delete the custom field if no logo is set
             delete_post_meta( $post->ID, 'council_logo_url' );
         }
+        
+        // Get parish name
+        $parish_name = self::get_parish_name();
+        if ( ! empty( $parish_name ) ) {
+            update_post_meta( $post->ID, 'parish_name', $parish_name );
+        } else {
+            delete_post_meta( $post->ID, 'parish_name' );
+        }
+        
+        // Get parish established year
+        $parish_year = self::get_parish_established_year();
+        if ( ! empty( $parish_year ) ) {
+            update_post_meta( $post->ID, 'parish_established_year', $parish_year );
+        } else {
+            delete_post_meta( $post->ID, 'parish_established_year' );
+        }
+        
+        // Get title color
+        $title_color = self::get_title_color();
+        if ( ! empty( $title_color ) ) {
+            update_post_meta( $post->ID, 'council_title_color', $title_color );
+        } else {
+            delete_post_meta( $post->ID, 'council_title_color' );
+        }
     }
     
     /**
@@ -1570,7 +1886,8 @@ class Council_Controller {
      */
     public function filter_post_metadata( $value, $object_id, $meta_key, $single ) {
         // Only intercept our specific custom fields
-        if ( 'council_hero_image_url' !== $meta_key && 'council_logo_url' !== $meta_key ) {
+        $our_fields = array( 'council_hero_image_url', 'council_logo_url', 'parish_name', 'parish_established_year', 'council_title_color' );
+        if ( ! in_array( $meta_key, $our_fields, true ) ) {
             return $value;
         }
         
@@ -1579,11 +1896,24 @@ class Council_Controller {
             return $value;
         }
         
-        // Dynamically generate the value
-        if ( 'council_hero_image_url' === $meta_key ) {
-            $generated_value = self::get_hero_image_url( 'full' );
-        } else {
-            $generated_value = self::get_council_logo_url( 'full' );
+        // Dynamically generate the value based on the requested field
+        $generated_value = '';
+        switch ( $meta_key ) {
+            case 'council_hero_image_url':
+                $generated_value = self::get_hero_image_url( 'full' );
+                break;
+            case 'council_logo_url':
+                $generated_value = self::get_council_logo_url( 'full' );
+                break;
+            case 'parish_name':
+                $generated_value = self::get_parish_name();
+                break;
+            case 'parish_established_year':
+                $generated_value = self::get_parish_established_year();
+                break;
+            case 'council_title_color':
+                $generated_value = self::get_title_color();
+                break;
         }
         
         // Return empty string if no value, not null

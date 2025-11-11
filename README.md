@@ -48,6 +48,7 @@ The plugin provides a color management system that outputs CSS variables for use
 - `--council-h6` - H6 heading color
 - `--council-link` - Link color
 - `--council-menu-link` - Menu link color
+- `--council-title-color` - Title color (for menu text when logo isn't available)
 - `--council-body-text` - Default body text color
 - `--council-button` - Button background color
 - `--council-button-text` - Button text color
@@ -76,6 +77,10 @@ a {
 
 nav a, .menu a {
     color: var(--council-menu-link);
+}
+
+.site-title {
+    color: var(--council-title-color);
 }
 
 button, .btn {
@@ -238,6 +243,39 @@ if (!empty($image_url)) {
 - Use `bg_position="top"` or `"bottom"` to control focal point
 - Add `class` attribute for additional custom styling
 
+#### `[parish_name]`
+**New in v1.11.0:** Displays the parish name.
+
+**Attributes:**
+- `tag` - HTML tag to wrap the name: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `span`)
+- `class` - Optional CSS class
+- `prepend` - Text to add before the parish name
+- `append` - Text to add after the parish name
+
+**Examples:**
+```
+[parish_name]
+[parish_name tag="h2"]
+[parish_name tag="p" class="parish-heading"]
+[parish_name tag="h1" prepend="Welcome to"]
+```
+
+#### `[parish_established_year]`
+**New in v1.11.0:** Displays the year the parish was established.
+
+**Attributes:**
+- `tag` - HTML tag to wrap the year: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`, `p`, `span`, or `div` (default: `span`)
+- `class` - Optional CSS class
+- `prepend` - Text to add before the year
+- `append` - Text to add after the year
+
+**Examples:**
+```
+[parish_established_year]
+[parish_established_year tag="span" prepend="Est. "]
+[parish_established_year tag="p" class="est-year"]
+```
+
 ### Page Builder Integration via Custom Fields
 
 **New in v1.9.0 (Fixed in v1.9.1):** Hero image and logo URLs are automatically added as custom fields to all pages and posts, making them accessible through page builder custom field/dynamic data features.
@@ -245,6 +283,9 @@ if (!empty($image_url)) {
 **Available Custom Fields:**
 - `council_hero_image_url` - Hero image URL (full size)
 - `council_logo_url` - Council logo URL (full size)
+- `parish_name` - Parish name text
+- `parish_established_year` - Parish established year
+- `council_title_color` - Title color hex value
 
 **Technical Note:** Custom fields are provided dynamically via WordPress metadata filters, ensuring they're always available on both frontend and backend, even before being written to the database.
 

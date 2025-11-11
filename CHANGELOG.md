@@ -5,6 +5,36 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2025-11-11
+
+### Added
+- **Parish Name Field**: New text field for storing parish name separately from council name
+  - Accessible via `Council_Controller::get_parish_name()` static method
+  - `[parish_name]` shortcode with support for tag, class, prepend, and append parameters
+  - Custom field `parish_name` available in all page builders
+  
+- **Parish Established Year Field**: New text field for storing the year the parish was established
+  - Accessible via `Council_Controller::get_parish_established_year()` static method
+  - `[parish_established_year]` shortcode with support for tag, class, prepend, and append parameters
+  - Custom field `parish_established_year` available in all page builders
+  
+- **Title Color Field**: New color picker field for menu title text styling when logo isn't available
+  - CSS variable: `--council-title-color`
+  - Accessible via `Council_Controller::get_title_color()` static method
+  - Custom field `council_title_color` available in all page builders
+  - Hex color validation and sanitization
+
+### Technical Details
+- Added three new database fields: `parish_name`, `parish_established_year`, `title_color`
+- Added corresponding render methods for admin interface
+- Added public static API methods for programmatic access
+- Added two new shortcode handlers with full tag/prepend/append support
+- Updated custom fields system to include new parish and title color fields
+- Updated metadata filter to provide new fields dynamically
+- Updated CSS variable output to include title color
+- Updated shortcode documentation registry
+- Total color fields: 17 (added title_color)
+
 ## [1.10.0] - 2025-11-11
 
 ### Added
