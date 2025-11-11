@@ -5,6 +5,21 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1] - 2025-11-11
+
+### Fixed
+- **Custom Fields Frontend Bug**: Fixed issue where custom fields (`council_hero_image_url` and `council_logo_url`) worked in backend/editor but not on frontend
+  - Root cause: Page builders were requesting custom fields before they were written to the database
+  - Solution: Added `filter_post_metadata` filter to provide values dynamically when requested
+  - Changed hook from `wp` to `template_redirect` for better timing
+  - Custom fields now work reliably on both frontend and backend
+
+### Technical Details
+- Added new `filter_post_metadata()` method to intercept custom field requests
+- Moved custom field population to `template_redirect` hook (priority 1)
+- Values now provided dynamically via WordPress metadata filter system
+- Ensures custom fields are always available regardless of timing
+
 ## [1.9.0] - 2025-11-11
 
 ### Added

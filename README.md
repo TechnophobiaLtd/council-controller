@@ -198,11 +198,13 @@ if (!empty($image_url)) {
 
 ### Page Builder Integration via Custom Fields
 
-**New in v1.9.0:** Hero image and logo URLs are automatically added as custom fields to all pages and posts, making them accessible through page builder custom field/dynamic data features.
+**New in v1.9.0 (Fixed in v1.9.1):** Hero image and logo URLs are automatically added as custom fields to all pages and posts, making them accessible through page builder custom field/dynamic data features.
 
 **Available Custom Fields:**
 - `council_hero_image_url` - Hero image URL (full size)
 - `council_logo_url` - Council logo URL (full size)
+
+**Technical Note:** Custom fields are provided dynamically via WordPress metadata filters, ensuring they're always available on both frontend and backend, even before being written to the database.
 
 **How to Use in Page Builders:**
 

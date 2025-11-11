@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.9.0
+ * Version: 1.9.1
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -61,7 +61,11 @@ class Council_Controller {
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_styles' ) );
         
         // Add custom fields to all pages and posts for page builder integration
-        add_action( 'wp', array( $this, 'add_custom_fields_to_posts' ) );
+        // Use template_redirect which fires after wp but before template rendering
+        add_action( 'template_redirect', array( $this, 'add_custom_fields_to_posts' ), 1 );
+        
+        // Also hook into get_post_metadata to provide custom fields dynamically
+        add_filter( 'get_post_metadata', array( $this, 'filter_post_metadata' ), 10, 4 );
     }
     
     /**
@@ -1433,6 +1437,53 @@ class Council_Controller {
         } else {
             // Delete the custom field if no logo is set
             delete_post_meta( $post->ID, 'council_logo_url' );
+        }
+    }
+    
+    /**
+     * Filter post metadata to provide custom fields dynamically
+     * 
+     * This filter intercepts requests for our custom field meta keys and provides
+     * the values dynamically, ensuring they're always available even if not yet
+     * written to the database. This solves timing issues with page builders that
+     * may request custom fields before the add_custom_fields_to_posts() method runs.
+     * 
+     * @since 1.9.1
+     * 
+     * @param mixed  $value     The value to return. Default null.
+     * @param int    $object_id Post ID.
+     * @param string $meta_key  Meta key being requested.
+     * @param bool   $single    Whether to return a single value.
+     * @return mixed The filtered meta value.
+     */
+    public function filter_post_metadata( $value, $object_id, $meta_key, $single ) {
+        // Only intercept our specific custom fields
+        if ( 'council_hero_image_url' !== $meta_key && 'council_logo_url' !== $meta_key ) {
+            return $value;
+        }
+        
+        // If value is already set (from database), return it
+        if ( null !== $value ) {
+            return $value;
+        }
+        
+        // Dynamically generate the value
+        if ( 'council_hero_image_url' === $meta_key ) {
+            $generated_value = self::get_hero_image_url( 'full' );
+        } else {
+            $generated_value = self::get_council_logo_url( 'full' );
+        }
+        
+        // Return empty string if no value, not null
+        if ( empty( $generated_value ) ) {
+            return $single ? '' : array( '' );
+        }
+        
+        // Return the value in the format WordPress expects
+        if ( $single ) {
+            return $generated_value;
+        } else {
+            return array( $generated_value );
         }
     }
 }
