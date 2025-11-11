@@ -5,6 +5,73 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.13.0] - 2025-11-11
+
+### Added
+- **Contact & Location Section**: New section with comprehensive contact and location fields
+  - **Council Address**: Textarea field for main council office address
+    - Accessible via `Council_Controller::get_council_address()` static method
+    - `[council_address]` shortcode with support for tag, class, prepend, and append parameters
+    - Custom field `council_address` available in all page builders
+  - **Meeting Venue Address**: Textarea field for meeting location (if different from office)
+    - Accessible via `Council_Controller::get_meeting_venue_address()` static method
+    - `[meeting_venue_address]` shortcode with support for tag, class, prepend, and append parameters
+    - Custom field `meeting_venue_address` available in all page builders
+  - **Email Address**: Email field with validation
+    - Accessible via `Council_Controller::get_email_address()` static method
+    - `[email_address]` shortcode with optional mailto link (link="yes/no")
+    - Custom field `email_address` available in all page builders
+  - **Phone Number**: Text field for main contact number
+    - Accessible via `Council_Controller::get_phone_number()` static method
+    - `[phone_number]` shortcode with optional tel link (link="yes/no")
+    - Custom field `phone_number` available in all page builders
+  - **Clerk's Name**: Text field for parish/town clerk name
+    - Accessible via `Council_Controller::get_clerk_name()` static method
+    - `[clerk_name]` shortcode with support for tag, class, prepend, and append parameters
+    - Custom field `clerk_name` available in all page builders
+  - **Office Hours**: Textarea field for opening times
+    - Accessible via `Council_Controller::get_office_hours()` static method
+    - `[office_hours]` shortcode with support for tag, class, prepend, and append parameters
+    - Custom field `office_hours` available in all page builders
+  - **Map Embed / Coordinates**: Textarea field for map iframe or coordinates
+    - Accessible via `Council_Controller::get_map_embed()` static method
+    - `[map_embed]` shortcode for displaying map embeds
+    - Custom field `map_embed` available in all page builders
+    - Supports iframe embeds with proper sanitization
+
+- **Governance & Meetings Section**: New section for meeting and governance information
+  - **Meeting Schedule**: Text field for regular meeting frequency
+    - Accessible via `Council_Controller::get_meeting_schedule()` static method
+    - `[meeting_schedule]` shortcode with support for tag, class, prepend, and append parameters
+    - Custom field `meeting_schedule` available in all page builders
+  - **Annual Parish Meeting Date**: Text field for annual meeting schedule
+    - Accessible via `Council_Controller::get_annual_meeting_date()` static method
+    - `[annual_meeting_date]` shortcode with support for tag, class, prepend, and append parameters
+    - Custom field `annual_meeting_date` available in all page builders
+
+- **Miscellaneous Section**: New section for additional information
+  - **County**: Text field for county location
+    - Accessible via `Council_Controller::get_county()` static method
+    - `[county]` shortcode with support for tag, class, prepend, and append parameters
+    - Custom field `county` available in all page builders
+
+### Technical Details
+- Added 10 new database fields for contact, location, governance, and miscellaneous information
+- Added corresponding render methods for admin interface with appropriate field types
+- Added 11 new public static API methods for programmatic access
+- Added 10 new shortcode handlers with full tag/prepend/append support
+- Email field uses `sanitize_email()` for proper validation
+- Address and office hours fields use `nl2br()` for proper line break rendering
+- Map embed field uses `wp_kses()` with iframe whitelist for security
+- Phone shortcode includes automatic tel link creation with number formatting cleanup
+- Email shortcode includes automatic mailto link creation
+- Updated custom fields system to include all new fields
+- Updated metadata filter to provide new fields dynamically to page builders
+- Updated shortcode documentation registry with comprehensive examples
+- Total new fields: 10 (7 contact/location + 2 governance + 1 misc)
+- Total new shortcodes: 10
+- Total custom fields for page builders: 15
+
 ## [1.11.0] - 2025-11-11
 
 ### Added
