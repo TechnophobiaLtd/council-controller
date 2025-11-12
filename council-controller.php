@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.13.0
+ * Version: 1.14.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -66,6 +66,9 @@ class Council_Controller {
         
         // Also hook into get_post_metadata to provide custom fields dynamically
         add_filter( 'get_post_metadata', array( $this, 'filter_post_metadata' ), 10, 4 );
+        
+        // Register REST API endpoints
+        add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
     }
     
     /**
@@ -562,6 +565,380 @@ class Council_Controller {
          * @param array $shortcode_docs Array of shortcode documentation
          */
         $this->shortcode_docs = apply_filters( 'council_controller_shortcode_docs', $this->shortcode_docs );
+    }
+    
+    /**
+     * Register REST API routes
+     * 
+     * Provides API endpoints for reading and updating council settings.
+     * Useful for migrating old council websites to the template site.
+     * 
+     * @since 1.14.0
+     */
+    public function register_rest_routes() {
+        // GET endpoint - retrieve all council settings
+        register_rest_route( 'council-controller/v1', '/settings', array(
+            'methods'             => 'GET',
+            'callback'            => array( $this, 'rest_get_settings' ),
+            'permission_callback' => '__return_true', // Public read access
+        ) );
+        
+        // POST/PUT endpoint - update council settings
+        register_rest_route( 'council-controller/v1', '/settings', array(
+            'methods'             => array( 'POST', 'PUT' ),
+            'callback'            => array( $this, 'rest_update_settings' ),
+            'permission_callback' => array( $this, 'rest_permission_check' ),
+            'args'                => $this->get_rest_update_args(),
+        ) );
+    }
+    
+    /**
+     * Get all council settings via REST API
+     * 
+     * @param WP_REST_Request $request Full request data
+     * @return WP_REST_Response|WP_Error Response object or error
+     * 
+     * @since 1.14.0
+     */
+    public function rest_get_settings( $request ) {
+        $options = get_option( self::OPTION_NAME, array() );
+        
+        // Build comprehensive response with all fields
+        $response = array(
+            // Text fields
+            'council_name'            => isset( $options['council_name'] ) ? $options['council_name'] : '',
+            'parish_name'             => isset( $options['parish_name'] ) ? $options['parish_name'] : '',
+            'parish_established_year' => isset( $options['parish_established_year'] ) ? $options['parish_established_year'] : '',
+            'council_address'         => isset( $options['council_address'] ) ? $options['council_address'] : '',
+            'meeting_venue_address'   => isset( $options['meeting_venue_address'] ) ? $options['meeting_venue_address'] : '',
+            'email_address'           => isset( $options['email_address'] ) ? $options['email_address'] : '',
+            'phone_number'            => isset( $options['phone_number'] ) ? $options['phone_number'] : '',
+            'clerk_name'              => isset( $options['clerk_name'] ) ? $options['clerk_name'] : '',
+            'office_hours'            => isset( $options['office_hours'] ) ? $options['office_hours'] : '',
+            'map_embed'               => isset( $options['map_embed'] ) ? $options['map_embed'] : '',
+            'meeting_schedule'        => isset( $options['meeting_schedule'] ) ? $options['meeting_schedule'] : '',
+            'annual_meeting_date'     => isset( $options['annual_meeting_date'] ) ? $options['annual_meeting_date'] : '',
+            'county'                  => isset( $options['county'] ) ? $options['county'] : '',
+            
+            // Image fields (include both IDs and URLs)
+            'council_logo'            => isset( $options['council_logo'] ) ? absint( $options['council_logo'] ) : 0,
+            'council_logo_url'        => self::get_council_logo_url( 'full' ),
+            'hero_image'              => isset( $options['hero_image'] ) ? absint( $options['hero_image'] ) : 0,
+            'hero_image_url'          => self::get_hero_image_url( 'full' ),
+            
+            // Color fields
+            'primary_color'           => isset( $options['primary_color'] ) ? $options['primary_color'] : '',
+            'secondary_color'         => isset( $options['secondary_color'] ) ? $options['secondary_color'] : '',
+            'tertiary_color'          => isset( $options['tertiary_color'] ) ? $options['tertiary_color'] : '',
+            'h1_color'                => isset( $options['h1_color'] ) ? $options['h1_color'] : '',
+            'h2_color'                => isset( $options['h2_color'] ) ? $options['h2_color'] : '',
+            'h3_color'                => isset( $options['h3_color'] ) ? $options['h3_color'] : '',
+            'h4_color'                => isset( $options['h4_color'] ) ? $options['h4_color'] : '',
+            'h5_color'                => isset( $options['h5_color'] ) ? $options['h5_color'] : '',
+            'h6_color'                => isset( $options['h6_color'] ) ? $options['h6_color'] : '',
+            'link_color'              => isset( $options['link_color'] ) ? $options['link_color'] : '',
+            'menu_link_color'         => isset( $options['menu_link_color'] ) ? $options['menu_link_color'] : '',
+            'title_color'             => isset( $options['title_color'] ) ? $options['title_color'] : '',
+            'body_color'              => isset( $options['body_color'] ) ? $options['body_color'] : '',
+            'button_color'            => isset( $options['button_color'] ) ? $options['button_color'] : '',
+            'button_text_color'       => isset( $options['button_text_color'] ) ? $options['button_text_color'] : '',
+            'button_hover_color'      => isset( $options['button_hover_color'] ) ? $options['button_hover_color'] : '',
+            'button_text_hover_color' => isset( $options['button_text_hover_color'] ) ? $options['button_text_hover_color'] : '',
+        );
+        
+        return rest_ensure_response( $response );
+    }
+    
+    /**
+     * Update council settings via REST API
+     * 
+     * @param WP_REST_Request $request Full request data
+     * @return WP_REST_Response|WP_Error Response object or error
+     * 
+     * @since 1.14.0
+     */
+    public function rest_update_settings( $request ) {
+        $options = get_option( self::OPTION_NAME, array() );
+        $params = $request->get_json_params();
+        
+        if ( empty( $params ) ) {
+            $params = $request->get_body_params();
+        }
+        
+        // Sanitize and update each field that's provided
+        if ( isset( $params['council_name'] ) ) {
+            $options['council_name'] = sanitize_text_field( $params['council_name'] );
+        }
+        
+        if ( isset( $params['parish_name'] ) ) {
+            $options['parish_name'] = sanitize_text_field( $params['parish_name'] );
+        }
+        
+        if ( isset( $params['parish_established_year'] ) ) {
+            $options['parish_established_year'] = sanitize_text_field( $params['parish_established_year'] );
+        }
+        
+        if ( isset( $params['council_address'] ) ) {
+            $options['council_address'] = sanitize_textarea_field( $params['council_address'] );
+        }
+        
+        if ( isset( $params['meeting_venue_address'] ) ) {
+            $options['meeting_venue_address'] = sanitize_textarea_field( $params['meeting_venue_address'] );
+        }
+        
+        if ( isset( $params['email_address'] ) ) {
+            $sanitized_email = sanitize_email( $params['email_address'] );
+            if ( empty( $params['email_address'] ) || is_email( $sanitized_email ) ) {
+                $options['email_address'] = $sanitized_email;
+            } else {
+                return new WP_Error( 'invalid_email', __( 'Invalid email address format.', 'council-controller' ), array( 'status' => 400 ) );
+            }
+        }
+        
+        if ( isset( $params['phone_number'] ) ) {
+            $options['phone_number'] = sanitize_text_field( $params['phone_number'] );
+        }
+        
+        if ( isset( $params['clerk_name'] ) ) {
+            $options['clerk_name'] = sanitize_text_field( $params['clerk_name'] );
+        }
+        
+        if ( isset( $params['office_hours'] ) ) {
+            $options['office_hours'] = sanitize_textarea_field( $params['office_hours'] );
+        }
+        
+        if ( isset( $params['map_embed'] ) ) {
+            // Allow iframe and basic HTML for map embeds, but sanitize carefully
+            $options['map_embed'] = wp_kses( $params['map_embed'], array(
+                'iframe' => array(
+                    'src'             => true,
+                    'width'           => true,
+                    'height'          => true,
+                    'frameborder'     => true,
+                    'style'           => true,
+                    'allowfullscreen' => true,
+                    'loading'         => true,
+                    'referrerpolicy'  => true,
+                ),
+            ) );
+        }
+        
+        if ( isset( $params['meeting_schedule'] ) ) {
+            $options['meeting_schedule'] = sanitize_text_field( $params['meeting_schedule'] );
+        }
+        
+        if ( isset( $params['annual_meeting_date'] ) ) {
+            $options['annual_meeting_date'] = sanitize_text_field( $params['annual_meeting_date'] );
+        }
+        
+        if ( isset( $params['county'] ) ) {
+            $options['county'] = sanitize_text_field( $params['county'] );
+        }
+        
+        // Handle image fields (attachment IDs)
+        if ( isset( $params['council_logo'] ) ) {
+            $logo_id = absint( $params['council_logo'] );
+            // Verify attachment exists
+            if ( $logo_id === 0 || wp_attachment_is_image( $logo_id ) ) {
+                $options['council_logo'] = $logo_id;
+            } else {
+                return new WP_Error( 'invalid_attachment', __( 'Invalid council logo attachment ID.', 'council-controller' ), array( 'status' => 400 ) );
+            }
+        }
+        
+        if ( isset( $params['hero_image'] ) ) {
+            $hero_id = absint( $params['hero_image'] );
+            // Verify attachment exists
+            if ( $hero_id === 0 || wp_attachment_is_image( $hero_id ) ) {
+                $options['hero_image'] = $hero_id;
+            } else {
+                return new WP_Error( 'invalid_attachment', __( 'Invalid hero image attachment ID.', 'council-controller' ), array( 'status' => 400 ) );
+            }
+        }
+        
+        // Handle color fields
+        $color_fields = array( 'primary_color', 'secondary_color', 'tertiary_color', 'h1_color', 'h2_color', 'h3_color', 'h4_color', 'h5_color', 'h6_color', 'link_color', 'menu_link_color', 'title_color', 'body_color', 'button_color', 'button_text_color', 'button_hover_color', 'button_text_hover_color' );
+        
+        foreach ( $color_fields as $field ) {
+            if ( isset( $params[ $field ] ) ) {
+                $sanitized_color = sanitize_hex_color( $params[ $field ] );
+                if ( empty( $params[ $field ] ) || $sanitized_color !== null ) {
+                    $options[ $field ] = $sanitized_color ? $sanitized_color : '';
+                } else {
+                    return new WP_Error( 'invalid_color', sprintf( __( 'Invalid color format for %s. Must be a hex color.', 'council-controller' ), $field ), array( 'status' => 400 ) );
+                }
+            }
+        }
+        
+        // Update the option
+        $updated = update_option( self::OPTION_NAME, $options );
+        
+        if ( $updated || get_option( self::OPTION_NAME ) === $options ) {
+            return rest_ensure_response( array(
+                'success' => true,
+                'message' => __( 'Settings updated successfully.', 'council-controller' ),
+                'data'    => $this->rest_get_settings( $request )->data,
+            ) );
+        } else {
+            return new WP_Error( 'update_failed', __( 'Failed to update settings.', 'council-controller' ), array( 'status' => 500 ) );
+        }
+    }
+    
+    /**
+     * Check permissions for REST API write operations
+     * 
+     * @param WP_REST_Request $request Full request data
+     * @return bool Whether the user has permission
+     * 
+     * @since 1.14.0
+     */
+    public function rest_permission_check( $request ) {
+        return current_user_can( 'manage_options' );
+    }
+    
+    /**
+     * Get REST API update endpoint arguments
+     * 
+     * @return array Arguments schema
+     * 
+     * @since 1.14.0
+     */
+    private function get_rest_update_args() {
+        return array(
+            // Text fields
+            'council_name'            => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'parish_name'             => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'parish_established_year' => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'council_address'         => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_textarea_field',
+            ),
+            'meeting_venue_address'   => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_textarea_field',
+            ),
+            'email_address'           => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_email',
+                'validate_callback' => function( $value, $request, $param ) {
+                    return empty( $value ) || is_email( $value );
+                },
+            ),
+            'phone_number'            => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'clerk_name'              => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'office_hours'            => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_textarea_field',
+            ),
+            'map_embed'               => array(
+                'type' => 'string',
+            ),
+            'meeting_schedule'        => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'annual_meeting_date'     => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            'county'                  => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ),
+            // Image fields
+            'council_logo'            => array(
+                'type'              => 'integer',
+                'sanitize_callback' => 'absint',
+            ),
+            'hero_image'              => array(
+                'type'              => 'integer',
+                'sanitize_callback' => 'absint',
+            ),
+            // Color fields
+            'primary_color'           => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'secondary_color'         => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'tertiary_color'          => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'h1_color'                => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'h2_color'                => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'h3_color'                => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'h4_color'                => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'h5_color'                => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'h6_color'                => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'link_color'              => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'menu_link_color'         => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'title_color'             => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'body_color'              => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'button_color'            => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'button_text_color'       => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'button_hover_color'      => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+            'button_text_hover_color' => array(
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_hex_color',
+            ),
+        );
     }
     
     /**
