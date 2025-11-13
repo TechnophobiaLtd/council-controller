@@ -5,6 +5,34 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.17.0] - 2025-11-13
+
+### Added
+- **Header/Footer Logo Shortcode**: New `[council_header_logo]` shortcode for displaying council branding in headers and footers
+  - Displays council logo with aria-label of council name if logo is available
+  - Automatically falls back to h2 with council name if no logo is supplied
+  - Perfect for responsive navigation headers and footer branding
+  - Attributes:
+    - `size` - Logo image size: thumbnail, medium, large, or full (default: full)
+    - `class` - Optional CSS class
+    - `link` - Whether to link to home page (yes/no) - default: yes
+  - Examples:
+    - `[council_header_logo]`
+    - `[council_header_logo size="medium" class="site-logo"]`
+  - Automatically documented in admin interface
+
+### Fixed
+- **Map Embed Container CSS**: Enhanced map embed styling to properly size the wrapper container
+  - Added CSS rule `.council-map-embed { height: 100%; width: 100%; }`
+  - Previous fix in 1.16.0 only styled the iframe, not the wrapper
+  - Maps now fill their parent container correctly with both wrapper and iframe at 100%
+
+### Technical Details
+- Added `shortcode_council_header_logo()` method with proper escaping and accessibility
+- Registered `council_header_logo` shortcode in `register_shortcodes()`
+- Added header logo shortcode documentation to `init_shortcode_docs()`
+- Updated `enqueue_frontend_styles()` to include wrapper div styling for map embeds
+
 ## [1.16.0] - 2025-11-13
 
 ### Added

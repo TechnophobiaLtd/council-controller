@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.16.0
+ * Version: 1.17.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -579,6 +579,30 @@ class Council_Controller {
                     '[council_copyright class="copyright"]',
                     '[council_copyright tag="p" class="footer-copyright"]',
                     '[council_copyright include_links="no"]',
+                ),
+            ),
+            'council_header_logo' => array(
+                'tag'         => 'council_header_logo',
+                'description' => __( 'Displays the council logo with an aria label if available, otherwise displays the council name as an h2. Suitable for use in headers and footers.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'size',
+                        'description' => __( 'Logo image size: thumbnail, medium, large, or full (default: full)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'link',
+                        'description' => __( 'Whether to link to the home page: yes or no (default: yes)', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[council_header_logo]',
+                    '[council_header_logo size="medium"]',
+                    '[council_header_logo class="site-logo" link="yes"]',
+                    '[council_header_logo size="large" class="header-branding"]',
                 ),
             ),
         );
@@ -2405,7 +2429,7 @@ class Council_Controller {
         }
         
         // Build base CSS for map embeds
-        $base_css = '.council-map-embed iframe { width: 100%; height: 100%; }';
+        $base_css = '.council-map-embed { height: 100%; width: 100%; } .council-map-embed iframe { width: 100%; height: 100%; }';
         
         // Only output if we have colors defined
         if ( ! empty( $css_vars ) ) {
@@ -2630,6 +2654,7 @@ class Council_Controller {
         add_shortcode( 'annual_meeting_date', array( $this, 'shortcode_annual_meeting_date' ) );
         add_shortcode( 'county', array( $this, 'shortcode_county' ) );
         add_shortcode( 'council_copyright', array( $this, 'shortcode_council_copyright' ) );
+        add_shortcode( 'council_header_logo', array( $this, 'shortcode_council_header_logo' ) );
     }
     
     /**
@@ -3653,6 +3678,79 @@ class Council_Controller {
         }
         
         return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [council_header_logo]
+     * Displays the council logo with aria label if available, otherwise displays the council name as h2
+     * Suitable for use in headers and footers
+     * 
+     * Attributes:
+     * - size: Logo image size: thumbnail, medium, large, or full (default: full)
+     * - class: Optional CSS class to add to the wrapper element
+     * - link: Whether to link to the home page: yes or no (default: yes)
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_council_header_logo( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'size'  => 'full',
+                'class' => '',
+                'link'  => 'yes',
+            ),
+            $atts,
+            'council_header_logo'
+        );
+        
+        $logo_id = self::get_council_logo_id();
+        $council_name = self::get_council_name();
+        
+        // Return empty if no content available
+        if ( empty( $logo_id ) && empty( $council_name ) ) {
+            return '';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // If logo exists, display it with aria-label
+        if ( ! empty( $logo_id ) ) {
+            // Build image attributes with aria-label
+            $image_attrs = array(
+                'alt'        => esc_attr( $council_name ),
+                'aria-label' => esc_attr( $council_name ),
+            );
+            
+            // Get the image at the specified size
+            $image = wp_get_attachment_image(
+                $logo_id,
+                $atts['size'],
+                false,
+                $image_attrs
+            );
+            
+            if ( empty( $image ) ) {
+                // Fallback to h2 if image fails
+                return '<h2' . $class_attr . '>' . esc_html( $council_name ) . '</h2>';
+            }
+            
+            // Optionally wrap in a link to home page
+            if ( 'yes' === strtolower( $atts['link'] ) ) {
+                $link_attrs = ' aria-label="' . esc_attr( $council_name ) . '"';
+                return '<a href="' . esc_url( home_url( '/' ) ) . '"' . $link_attrs . $class_attr . '>' . $image . '</a>';
+            }
+            
+            // Return image wrapped in a div or span if class is specified
+            if ( ! empty( $atts['class'] ) ) {
+                return '<div' . $class_attr . '>' . $image . '</div>';
+            }
+            
+            return $image;
+        }
+        
+        // No logo, display council name as h2
+        return '<h2' . $class_attr . '>' . esc_html( $council_name ) . '</h2>';
     }
     
     /**
