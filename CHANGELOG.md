@@ -5,6 +5,34 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.16.0] - 2025-11-13
+
+### Added
+- **Copyright Shortcode**: New `[council_copyright]` shortcode for displaying copyright footer with dynamic council name and current year
+  - Automatically includes current year via PHP `date()` function
+  - Includes dynamic council name from settings
+  - Optional policy links (Privacy Policy, Terms and Conditions, Cookie Policy)
+  - "Website Developed by Whamos Ltd" credit link
+  - Attributes:
+    - `tag` - HTML tag to wrap copyright (span, div, p) - default: span
+    - `class` - Optional CSS class
+    - `include_links` - Whether to include policy links (yes/no) - default: yes
+  - Example: `[council_copyright class="copyright"]`
+  - Automatically documented in admin interface
+
+### Fixed
+- **Google Map Embed Height Issue**: Map iframe now properly stretches to 100% height to fill parent container
+  - Added CSS rule `.council-map-embed iframe { width: 100%; height: 100%; }`
+  - Updated map_embed shortcode to always include base class `council-map-embed`
+  - Maps now fill both width and height of their container as expected
+
+### Technical Details
+- Modified `enqueue_frontend_styles()` to output base CSS for map embeds
+- Updated `shortcode_map_embed()` to always apply `council-map-embed` class
+- Added new `shortcode_council_copyright()` method with proper escaping and URL generation
+- Registered `council_copyright` shortcode in `register_shortcodes()`
+- Added copyright shortcode documentation to `init_shortcode_docs()`
+
 ## [1.15.0] - 2025-11-13
 
 ### Added

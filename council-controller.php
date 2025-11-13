@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.15.0
+ * Version: 1.16.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -555,6 +555,30 @@ class Council_Controller {
                     '[county]',
                     '[county prepend="Located in "]',
                     '[county tag="span" class="county-name"]',
+                ),
+            ),
+            'council_copyright' => array(
+                'tag'         => 'council_copyright',
+                'description' => __( 'Displays a copyright notice with the current year and council name.', 'council-controller' ),
+                'attributes'  => array(
+                    array(
+                        'name'        => 'tag',
+                        'description' => __( 'HTML tag to wrap the copyright: span, div, or p (default: span)', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'class',
+                        'description' => __( 'Optional CSS class to add to the wrapper element', 'council-controller' ),
+                    ),
+                    array(
+                        'name'        => 'include_links',
+                        'description' => __( 'Whether to include policy links: yes or no (default: yes)', 'council-controller' ),
+                    ),
+                ),
+                'examples'    => array(
+                    '[council_copyright]',
+                    '[council_copyright class="copyright"]',
+                    '[council_copyright tag="p" class="footer-copyright"]',
+                    '[council_copyright include_links="no"]',
                 ),
             ),
         );
@@ -2380,10 +2404,16 @@ class Council_Controller {
             $css_vars[] = '--council-button-text-hover: ' . esc_attr( $options['button_text_hover_color'] );
         }
         
+        // Build base CSS for map embeds
+        $base_css = '.council-map-embed iframe { width: 100%; height: 100%; }';
+        
         // Only output if we have colors defined
         if ( ! empty( $css_vars ) ) {
-            $custom_css = ':root { ' . implode( '; ', $css_vars ) . '; }';
+            $custom_css = ':root { ' . implode( '; ', $css_vars ) . '; } ' . $base_css;
             wp_add_inline_style( 'wp-block-library', $custom_css );
+        } else {
+            // Output base CSS even if no colors are defined
+            wp_add_inline_style( 'wp-block-library', $base_css );
         }
     }
     
@@ -2599,6 +2629,7 @@ class Council_Controller {
         add_shortcode( 'meeting_schedule', array( $this, 'shortcode_meeting_schedule' ) );
         add_shortcode( 'annual_meeting_date', array( $this, 'shortcode_annual_meeting_date' ) );
         add_shortcode( 'county', array( $this, 'shortcode_county' ) );
+        add_shortcode( 'council_copyright', array( $this, 'shortcode_council_copyright' ) );
     }
     
     /**
@@ -3385,7 +3416,12 @@ class Council_Controller {
             return '';
         }
         
-        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        // Build class attribute with base class and any custom class
+        $classes = array( 'council-map-embed' );
+        if ( ! empty( $atts['class'] ) ) {
+            $classes[] = esc_attr( $atts['class'] );
+        }
+        $class_attr = ' class="' . implode( ' ', $classes ) . '"';
         
         // If it's an iframe, output directly (already sanitized in save)
         if ( stripos( $embed, '<iframe' ) !== false ) {
@@ -3553,6 +3589,60 @@ class Council_Controller {
         $content .= esc_html( $county );
         if ( ! empty( $atts['append'] ) ) {
             $content .= ' ' . esc_html( $atts['append'] );
+        }
+        
+        return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
+    }
+    
+    /**
+     * Shortcode: [council_copyright]
+     * Displays a copyright notice with current year and council name
+     * 
+     * Attributes:
+     * - tag: HTML tag (span, div, p). Default: span
+     * - class: Optional CSS class
+     * - include_links: Whether to include policy links: yes or no (default: yes)
+     * 
+     * @param array $atts Shortcode attributes
+     * @return string HTML output
+     */
+    public function shortcode_council_copyright( $atts ) {
+        $atts = shortcode_atts(
+            array(
+                'tag'           => 'span',
+                'class'         => '',
+                'include_links' => 'yes',
+            ),
+            $atts,
+            'council_copyright'
+        );
+        
+        $council_name = self::get_council_name();
+        
+        // Return empty string if no council name is set
+        if ( empty( $council_name ) ) {
+            return '';
+        }
+        
+        // Validate and sanitize the tag parameter
+        $allowed_tags = array( 'span', 'div', 'p' );
+        $tag = strtolower( trim( $atts['tag'] ) );
+        
+        if ( ! in_array( $tag, $allowed_tags, true ) ) {
+            $tag = 'span';
+        }
+        
+        $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
+        
+        // Build the copyright content
+        $content = '&copy; ' . esc_html( date( 'Y' ) ) . ' ' . esc_html( $council_name ) . '. All rights reserved';
+        
+        // Add policy links if requested
+        if ( 'yes' === strtolower( $atts['include_links'] ) ) {
+            $content .= ' | <a class="footerlink" href="' . esc_url( home_url( '/privacy-policy' ) ) . '">Privacy Policy</a>';
+            $content .= ' | <a class="footerlink" href="' . esc_url( home_url( '/terms-and-conditions' ) ) . '">Terms and Conditions</a>';
+            $content .= ' | <a class="footerlink" href="' . esc_url( home_url( '/cookie-policy' ) ) . '">Cookie Policy</a>';
+            $content .= ' | Website Developed by <a href="' . esc_url( 'https://www.whamos.co.uk' ) . '">Whamos Ltd</a>';
         }
         
         return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
