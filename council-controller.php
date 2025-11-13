@@ -3634,15 +3634,22 @@ class Council_Controller {
         
         $class_attr = ! empty( $atts['class'] ) ? ' class="' . esc_attr( $atts['class'] ) . '"' : '';
         
+        // Get link color for inline styles
+        $options = get_option( self::OPTION_NAME, array() );
+        $link_style = '';
+        if ( ! empty( $options['link_color'] ) ) {
+            $link_style = ' style="color: ' . esc_attr( $options['link_color'] ) . ';"';
+        }
+        
         // Build the copyright content
         $content = '&copy; ' . esc_html( date( 'Y' ) ) . ' ' . esc_html( $council_name ) . '. All rights reserved';
         
         // Add policy links if requested
         if ( 'yes' === strtolower( $atts['include_links'] ) ) {
-            $content .= ' | <a href="' . esc_url( home_url( '/privacy-policy' ) ) . '">Privacy Policy</a>';
-            $content .= ' | <a href="' . esc_url( home_url( '/terms-and-conditions' ) ) . '">Terms and Conditions</a>';
-            $content .= ' | <a href="' . esc_url( home_url( '/cookie-policy' ) ) . '">Cookie Policy</a>';
-            $content .= ' | Website Developed by <a href="' . esc_url( 'https://www.whamos.co.uk' ) . '">Whamos Ltd</a>';
+            $content .= ' | <a href="' . esc_url( home_url( '/privacy-policy' ) ) . '"' . $link_style . '>Privacy Policy</a>';
+            $content .= ' | <a href="' . esc_url( home_url( '/terms-and-conditions' ) ) . '"' . $link_style . '>Terms and Conditions</a>';
+            $content .= ' | <a href="' . esc_url( home_url( '/cookie-policy' ) ) . '"' . $link_style . '>Cookie Policy</a>';
+            $content .= ' | Website Developed by <a href="' . esc_url( 'https://www.whamos.co.uk' ) . '"' . $link_style . '>Whamos Ltd</a>';
         }
         
         return '<' . $tag . $class_attr . '>' . $content . '</' . $tag . '>';
