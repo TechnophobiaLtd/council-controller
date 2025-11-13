@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Council Controller
  * Description: A Must-Use WordPress plugin for managing council information and serving it via shortcodes.
- * Version: 1.14.0
+ * Version: 1.15.0
  * Author: Council Controller
  * Text Domain: council-controller
  * License: MIT
@@ -652,10 +652,14 @@ class Council_Controller {
     /**
      * Update council settings via REST API
      * 
+     * Supports both JSON and multipart/form-data requests.
+     * For multipart requests, files can be uploaded directly for council_logo and hero_image.
+     * 
      * @param WP_REST_Request $request Full request data
      * @return WP_REST_Response|WP_Error Response object or error
      * 
      * @since 1.14.0
+     * @since 1.15.0 Added support for binary file uploads
      */
     public function rest_update_settings( $request ) {
         $options = get_option( self::OPTION_NAME, array() );
@@ -735,8 +739,20 @@ class Council_Controller {
             $options['county'] = sanitize_text_field( $params['county'] );
         }
         
-        // Handle image fields (attachment IDs)
-        if ( isset( $params['council_logo'] ) ) {
+        // Handle image fields (attachment IDs or file uploads)
+        // Check for file upload first, then fall back to attachment ID
+        $files = $request->get_file_params();
+        
+        // Handle council logo
+        if ( ! empty( $files['council_logo'] ) ) {
+            // File upload provided
+            $logo_result = $this->handle_image_upload( $files['council_logo'], 'council-logo' );
+            if ( is_wp_error( $logo_result ) ) {
+                return $logo_result;
+            }
+            $options['council_logo'] = $logo_result;
+        } elseif ( isset( $params['council_logo'] ) ) {
+            // Attachment ID provided (backward compatibility)
             $logo_id = absint( $params['council_logo'] );
             // Verify attachment exists
             if ( $logo_id === 0 || wp_attachment_is_image( $logo_id ) ) {
@@ -746,7 +762,16 @@ class Council_Controller {
             }
         }
         
-        if ( isset( $params['hero_image'] ) ) {
+        // Handle hero image
+        if ( ! empty( $files['hero_image'] ) ) {
+            // File upload provided
+            $hero_result = $this->handle_image_upload( $files['hero_image'], 'hero-image' );
+            if ( is_wp_error( $hero_result ) ) {
+                return $hero_result;
+            }
+            $options['hero_image'] = $hero_result;
+        } elseif ( isset( $params['hero_image'] ) ) {
+            // Attachment ID provided (backward compatibility)
             $hero_id = absint( $params['hero_image'] );
             // Verify attachment exists
             if ( $hero_id === 0 || wp_attachment_is_image( $hero_id ) ) {
@@ -782,6 +807,98 @@ class Council_Controller {
         } else {
             return new WP_Error( 'update_failed', __( 'Failed to update settings.', 'council-controller' ), array( 'status' => 500 ) );
         }
+    }
+    
+    /**
+     * Handle image upload from REST API request
+     * 
+     * Validates and uploads an image file to the WordPress media library.
+     * 
+     * @param array  $file File array from $_FILES
+     * @param string $prefix Prefix for the uploaded filename (e.g., 'council-logo')
+     * @return int|WP_Error Attachment ID on success, WP_Error on failure
+     * 
+     * @since 1.15.0
+     */
+    private function handle_image_upload( $file, $prefix = 'council' ) {
+        // Validate file exists
+        if ( empty( $file['tmp_name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
+            return new WP_Error( 'no_file', __( 'No file was uploaded.', 'council-controller' ), array( 'status' => 400 ) );
+        }
+        
+        // Check for upload errors
+        if ( $file['error'] !== UPLOAD_ERR_OK ) {
+            $error_message = __( 'File upload error.', 'council-controller' );
+            switch ( $file['error'] ) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $error_message = __( 'File is too large.', 'council-controller' );
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    $error_message = __( 'File upload was incomplete.', 'council-controller' );
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    $error_message = __( 'No file was uploaded.', 'council-controller' );
+                    break;
+            }
+            return new WP_Error( 'upload_error', $error_message, array( 'status' => 400 ) );
+        }
+        
+        // Validate file type (images only)
+        $allowed_types = array( 'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml' );
+        $file_type = wp_check_filetype( $file['name'] );
+        
+        if ( ! in_array( $file['type'], $allowed_types, true ) ) {
+            return new WP_Error( 'invalid_file_type', __( 'File must be an image (JPEG, PNG, GIF, WebP, or SVG).', 'council-controller' ), array( 'status' => 400 ) );
+        }
+        
+        // Validate file size (max 10MB)
+        $max_size = 10 * 1024 * 1024; // 10MB in bytes
+        if ( $file['size'] > $max_size ) {
+            return new WP_Error( 'file_too_large', __( 'File size must not exceed 10MB.', 'council-controller' ), array( 'status' => 400 ) );
+        }
+        
+        // Include WordPress file handling functions
+        if ( ! function_exists( 'wp_handle_upload' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+        if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+        }
+        
+        // Upload the file
+        $upload_overrides = array(
+            'test_form' => false, // Not from a traditional form
+        );
+        
+        $uploaded_file = wp_handle_upload( $file, $upload_overrides );
+        
+        if ( isset( $uploaded_file['error'] ) ) {
+            return new WP_Error( 'upload_failed', $uploaded_file['error'], array( 'status' => 500 ) );
+        }
+        
+        // Prepare attachment data
+        $attachment_data = array(
+            'post_mime_type' => $uploaded_file['type'],
+            'post_title'     => sanitize_file_name( pathinfo( $file['name'], PATHINFO_FILENAME ) ),
+            'post_content'   => '',
+            'post_status'    => 'inherit',
+        );
+        
+        // Insert the attachment into the media library
+        $attachment_id = wp_insert_attachment( $attachment_data, $uploaded_file['file'] );
+        
+        if ( is_wp_error( $attachment_id ) ) {
+            // Clean up uploaded file if attachment creation failed
+            @unlink( $uploaded_file['file'] );
+            return new WP_Error( 'attachment_failed', __( 'Failed to create attachment.', 'council-controller' ), array( 'status' => 500 ) );
+        }
+        
+        // Generate attachment metadata (thumbnails, etc.)
+        $attachment_metadata = wp_generate_attachment_metadata( $attachment_id, $uploaded_file['file'] );
+        wp_update_attachment_metadata( $attachment_id, $attachment_metadata );
+        
+        return $attachment_id;
     }
     
     /**

@@ -347,6 +347,8 @@ $hero_id = Council_Controller::get_hero_image_id();
 
 **New in v1.14.0:** The plugin provides REST API endpoints for reading and updating all council settings programmatically. This is particularly useful for migrating old council websites to the template site.
 
+**New in v1.15.0:** You can now upload images directly in the same API request using multipart/form-data, reducing the number of API calls needed.
+
 ### Authentication
 
 - **GET requests** (reading data): No authentication required - data is public
@@ -419,10 +421,20 @@ PUT /wp-json/council-controller/v1/settings
 }
 ```
 
+**Or Upload Images Directly (Multipart/Form-Data, v1.15.0+):**
+```bash
+curl -X POST https://example.com/wp-json/council-controller/v1/settings \
+  -u admin:password \
+  -F "council_logo=@/path/to/logo.png" \
+  -F "hero_image=@/path/to/hero.jpg" \
+  -F "council_name=New Council Name"
+```
+
 **Notes:**
 - You can update any combination of fields
 - Only include fields you want to update
-- Image fields accept attachment IDs (must be valid image attachments)
+- Image fields accept either attachment IDs (JSON) or binary files (multipart)
+- Supported image formats: JPEG, PNG, GIF, WebP, SVG (max 10MB each)
 - Color fields must be valid hex colors (e.g., `#ff0000`) or empty strings
 - Email addresses are validated for proper format
 
@@ -553,7 +565,7 @@ if ( is_wp_error( $response ) ) {
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.14.0
+**Current Version:** 1.15.0
 
 ### Version Format
 
