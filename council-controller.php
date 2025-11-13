@@ -3639,9 +3639,9 @@ class Council_Controller {
         
         // Add policy links if requested
         if ( 'yes' === strtolower( $atts['include_links'] ) ) {
-            $content .= ' | <a class="footerlink" href="' . esc_url( home_url( '/privacy-policy' ) ) . '">Privacy Policy</a>';
-            $content .= ' | <a class="footerlink" href="' . esc_url( home_url( '/terms-and-conditions' ) ) . '">Terms and Conditions</a>';
-            $content .= ' | <a class="footerlink" href="' . esc_url( home_url( '/cookie-policy' ) ) . '">Cookie Policy</a>';
+            $content .= ' | <a href="' . esc_url( home_url( '/privacy-policy' ) ) . '">Privacy Policy</a>';
+            $content .= ' | <a href="' . esc_url( home_url( '/terms-and-conditions' ) ) . '">Terms and Conditions</a>';
+            $content .= ' | <a href="' . esc_url( home_url( '/cookie-policy' ) ) . '">Cookie Policy</a>';
             $content .= ' | Website Developed by <a href="' . esc_url( 'https://www.whamos.co.uk' ) . '">Whamos Ltd</a>';
         }
         
