@@ -5,6 +5,30 @@ All notable changes to the Council Controller plugin will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.0] - 2025-11-13
+
+### Added
+- **Binary File Upload Support in REST API**: The POST/PUT endpoint now accepts multipart/form-data requests with binary file uploads for council_logo and hero_image
+  - Upload images directly in the settings request instead of requiring separate upload + update calls
+  - Reduces API calls from 2 (upload then update) to 1 (update with file)
+  - Supports both attachment IDs (backward compatible) and binary files (new feature)
+  - Added `handle_image_upload()` private method for processing file uploads
+  - Validates file type (JPEG, PNG, GIF, WebP, SVG), size (max 10MB), and upload errors
+  - Automatically creates WordPress media attachments with proper metadata
+  - Maintains full backward compatibility with existing JSON-based API calls
+
+### Technical Details
+- Updated `rest_update_settings()` to handle multipart/form-data requests via `$request->get_file_params()`
+- File uploads are processed first, falling back to attachment ID parameters
+- New `handle_image_upload()` method includes:
+  - Upload error validation
+  - File type validation (images only)
+  - File size validation (max 10MB)
+  - WordPress media library integration
+  - Automatic thumbnail generation
+  - Proper error handling and cleanup
+- Updated documentation with multipart/form-data examples
+
 ## [1.14.0] - 2025-11-11
 
 ### Added

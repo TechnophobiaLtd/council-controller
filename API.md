@@ -1,11 +1,12 @@
 # Council Controller REST API Documentation
 
-Version 1.14.0
+Version 1.15.0
 
 ## Overview
 
 The Council Controller plugin provides REST API endpoints for programmatic access to all council settings. This is particularly useful for:
 - Migrating council data from old websites to new template sites
+- Uploading images directly via API (new in v1.15.0)
 - Integrating council information with external systems
 - Automated backup and restore operations
 - Bulk updates across multiple council websites
@@ -88,7 +89,9 @@ Update any combination of council settings.
 
 **Authentication:** Required (`manage_options` capability)
 
-**Content-Type:** `application/json`
+**Content-Type:** `application/json` or `multipart/form-data`
+
+#### JSON Request (for text, color, and image IDs)
 
 **Request Body:**
 ```json
@@ -101,10 +104,35 @@ Update any combination of council settings.
 }
 ```
 
+#### Multipart/Form-Data Request (for uploading image files)
+
+**New in v1.15.0**: You can now upload images directly without needing separate API calls.
+
+**Request Body:**
+```
+Content-Type: multipart/form-data
+
+council_name=Updated Council Name
+parish_name=Updated Parish
+primary_color=#ff0000
+council_logo=<binary file data>
+hero_image=<binary file data>
+email_address=newclerk@example.gov.uk
+```
+
+**File Upload Notes:**
+- Supported image formats: JPEG, PNG, GIF, WebP, SVG
+- Maximum file size: 10MB per image
+- Files are automatically added to WordPress media library
+- You can upload one or both images in the same request
+- You can mix file uploads with other field updates
+- Backward compatible: You can still use attachment IDs instead of files
+
 **Notes:**
 - Only include fields you want to update
 - Omitted fields will retain their current values
 - All fields are optional
+- For images: provide either an attachment ID (JSON) or upload a file (multipart)
 
 **Success Response:** `200 OK`
 
@@ -125,6 +153,28 @@ Update any combination of council settings.
 {
   "code": "invalid_email",
   "message": "Invalid email address format.",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+`400 Bad Request` - Invalid file type
+```json
+{
+  "code": "invalid_file_type",
+  "message": "File must be an image (JPEG, PNG, GIF, WebP, or SVG).",
+  "data": {
+    "status": 400
+  }
+}
+```
+
+`400 Bad Request` - File too large
+```json
+{
+  "code": "file_too_large",
+  "message": "File size must not exceed 10MB.",
   "data": {
     "status": 400
   }
@@ -188,12 +238,20 @@ Update any combination of council settings.
 
 | Field | Type | Description | Notes |
 |-------|------|-------------|-------|
-| `council_logo` | integer | Logo attachment ID | Must be valid WordPress media attachment |
+| `council_logo` | integer or file | Logo attachment ID or binary file | Can provide attachment ID (JSON) or upload file (multipart) |
 | `council_logo_url` | string | Logo URL (read-only) | Automatically generated from attachment ID |
-| `hero_image` | integer | Hero image attachment ID | Must be valid WordPress media attachment |
+| `hero_image` | integer or file | Hero image attachment ID or binary file | Can provide attachment ID (JSON) or upload file (multipart) |
 | `hero_image_url` | string | Hero image URL (read-only) | Automatically generated from attachment ID |
 
-**Note:** Image URLs are provided for convenience in GET requests but cannot be set directly. To update images, provide the WordPress attachment ID. Use `0` to clear an image.
+**Update Methods (v1.15.0+):**
+1. **Attachment ID** (JSON): Provide the WordPress attachment ID as an integer
+2. **Binary File Upload** (Multipart): Upload the image file directly in a multipart/form-data request
+3. Use `0` to clear an image
+
+**File Upload Requirements:**
+- **Formats**: JPEG, PNG, GIF, WebP, SVG
+- **Maximum Size**: 10MB per file
+- **Processing**: Files are automatically added to WordPress media library with thumbnails
 
 ### Color Fields
 
@@ -228,7 +286,7 @@ All color fields must be valid hex colors (e.g., `#ff0000` or `#f00`) or empty s
 curl https://example.com/wp-json/council-controller/v1/settings
 ```
 
-**Update Settings with Basic Auth:**
+**Update Settings with JSON (Basic Auth):**
 ```bash
 curl -X POST https://example.com/wp-json/council-controller/v1/settings \
   -H "Content-Type: application/json" \
@@ -239,7 +297,7 @@ curl -X POST https://example.com/wp-json/council-controller/v1/settings \
   }'
 ```
 
-**Update Settings with Application Password:**
+**Update Settings with JSON (Application Password):**
 ```bash
 curl -X POST https://example.com/wp-json/council-controller/v1/settings \
   -H "Content-Type: application/json" \
@@ -248,6 +306,34 @@ curl -X POST https://example.com/wp-json/council-controller/v1/settings \
     "email_address": "clerk@newcouncil.gov.uk",
     "phone_number": "01234 567890"
   }'
+```
+
+**Upload Images with Multipart (New in v1.15.0):**
+```bash
+# Upload council logo only
+curl -X POST https://example.com/wp-json/council-controller/v1/settings \
+  -u admin:password \
+  -F "council_logo=@/path/to/logo.png"
+
+# Upload hero image only
+curl -X POST https://example.com/wp-json/council-controller/v1/settings \
+  -u admin:password \
+  -F "hero_image=@/path/to/hero.jpg"
+
+# Upload both images in one request
+curl -X POST https://example.com/wp-json/council-controller/v1/settings \
+  -u admin:password \
+  -F "council_logo=@/path/to/logo.png" \
+  -F "hero_image=@/path/to/hero.jpg"
+
+# Upload images AND update other fields
+curl -X POST https://example.com/wp-json/council-controller/v1/settings \
+  -u admin:password \
+  -F "council_name=New Council Name" \
+  -F "council_logo=@/path/to/logo.png" \
+  -F "hero_image=@/path/to/hero.jpg" \
+  -F "primary_color=#0066cc" \
+  -F "email_address=clerk@example.gov.uk"
 ```
 
 ### JavaScript Examples
@@ -263,7 +349,7 @@ fetch('https://example.com/wp-json/council-controller/v1/settings')
   .catch(error => console.error('Error:', error));
 ```
 
-**Update Settings:**
+**Update Settings (JSON):**
 ```javascript
 const updateData = {
   council_name: 'New Council Name',
@@ -288,6 +374,58 @@ fetch('https://example.com/wp-json/council-controller/v1/settings', {
     }
   })
   .catch(error => console.error('Error:', error));
+```
+
+**Upload Images (Multipart, New in v1.15.0):**
+```javascript
+// From a file input element
+const fileInput = document.getElementById('logoInput');
+const formData = new FormData();
+formData.append('council_logo', fileInput.files[0]);
+formData.append('council_name', 'Updated Council Name');
+formData.append('primary_color', '#0066cc');
+
+fetch('https://example.com/wp-json/council-controller/v1/settings', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic ' + btoa('username:password')
+    // Note: Do NOT set Content-Type header - browser will set it automatically with boundary
+  },
+  body: formData
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('Image uploaded and settings updated!');
+      console.log('New logo URL:', data.data.council_logo_url);
+    }
+  })
+  .catch(error => console.error('Error:', error));
+```
+
+**Upload Both Images:**
+```javascript
+const logoFile = document.getElementById('logoInput').files[0];
+const heroFile = document.getElementById('heroInput').files[0];
+const formData = new FormData();
+
+formData.append('council_logo', logoFile);
+formData.append('hero_image', heroFile);
+formData.append('council_name', 'New Council');
+
+fetch('https://example.com/wp-json/council-controller/v1/settings', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Basic ' + btoa('username:password')
+  },
+  body: formData
+})
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('Both images uploaded!');
+    }
+  });
 ```
 
 ### PHP Examples
@@ -337,6 +475,48 @@ if ( is_wp_error( $response ) ) {
 }
 ```
 
+**Upload Images (New in v1.15.0):**
+```php
+<?php
+// Note: WordPress doesn't have built-in multipart file upload for wp_remote_post
+// Use cURL directly or a library like Guzzle
+
+$logo_file = '/path/to/logo.png';
+$hero_file = '/path/to/hero.jpg';
+
+$ch = curl_init();
+curl_setopt( $ch, CURLOPT_URL, 'https://example.com/wp-json/council-controller/v1/settings' );
+curl_setopt( $ch, CURLOPT_POST, true );
+curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+curl_setopt( $ch, CURLOPT_USERPWD, 'username:password' );
+curl_setopt( $ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC );
+
+// Create CURLFile objects for file uploads
+$postfields = array(
+    'council_logo' => new CURLFile( $logo_file, 'image/png', 'logo.png' ),
+    'hero_image'   => new CURLFile( $hero_file, 'image/jpeg', 'hero.jpg' ),
+    'council_name' => 'New Council Name',
+    'primary_color' => '#0066cc',
+);
+
+curl_setopt( $ch, CURLOPT_POSTFIELDS, $postfields );
+
+$response = curl_exec( $ch );
+$http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+curl_close( $ch );
+
+if ( $http_code === 200 ) {
+    $data = json_decode( $response, true );
+    if ( isset( $data['success'] ) && $data['success'] ) {
+        echo 'Images uploaded successfully!';
+        echo 'Logo URL: ' . $data['data']['council_logo_url'];
+        echo 'Hero URL: ' . $data['data']['hero_image_url'];
+    }
+} else {
+    echo 'Upload failed with HTTP code: ' . $http_code;
+}
+```
+
 ### Python Example
 
 ```python
@@ -348,7 +528,7 @@ response = requests.get('https://example.com/wp-json/council-controller/v1/setti
 data = response.json()
 print(f"Council Name: {data['council_name']}")
 
-# Update settings
+# Update settings (JSON)
 update_data = {
     'council_name': 'Updated Council',
     'primary_color': '#0066cc',
@@ -366,6 +546,41 @@ if result.get('success'):
     print('Settings updated successfully!')
 else:
     print(f"Update failed: {result.get('message')}")
+```
+
+**Upload Images (Python, New in v1.15.0):**
+```python
+import requests
+
+# Upload images with multipart/form-data
+files = {
+    'council_logo': open('/path/to/logo.png', 'rb'),
+    'hero_image': open('/path/to/hero.jpg', 'rb')
+}
+
+data = {
+    'council_name': 'New Council Name',
+    'primary_color': '#0066cc'
+}
+
+response = requests.post(
+    'https://example.com/wp-json/council-controller/v1/settings',
+    auth=('username', 'password'),
+    files=files,
+    data=data
+)
+
+result = response.json()
+if result.get('success'):
+    print('Images uploaded successfully!')
+    print(f"Logo URL: {result['data']['council_logo_url']}")
+    print(f"Hero URL: {result['data']['hero_image_url']}")
+else:
+    print(f"Upload failed: {result.get('message')}")
+
+# Close file handles
+for f in files.values():
+    f.close()
 ```
 
 ## Migration Workflow
@@ -484,4 +699,4 @@ For issues or questions:
 
 ## Version
 
-This documentation is for Council Controller version 1.14.0.
+This documentation is for Council Controller version 1.15.0.

@@ -56,6 +56,15 @@ curl -X POST https://example.com/wp-json/council-controller/v1/settings \
   -d '{"council_name":"New Name","primary_color":"#0066cc"}'
 ```
 
+### cURL - Upload Images (v1.15.0+)
+```bash
+curl -X POST https://example.com/wp-json/council-controller/v1/settings \
+  -u admin:password \
+  -F "council_logo=@/path/to/logo.png" \
+  -F "hero_image=@/path/to/hero.jpg" \
+  -F "council_name=New Name"
+```
+
 ### JavaScript - Fetch
 ```javascript
 fetch('https://example.com/wp-json/council-controller/v1/settings')
@@ -161,4 +170,4 @@ wp_remote_post('https://example.com/wp-json/council-controller/v1/settings', [
 - Changelog: `CHANGELOG.md`
 
 ---
-Council Controller v1.14.0
+Council Controller v1.15.0
