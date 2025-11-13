@@ -276,6 +276,33 @@ if (!empty($image_url)) {
 [parish_established_year tag="p" class="est-year"]
 ```
 
+#### `[council_copyright]`
+**New in v1.16.0:** Displays a copyright notice with the current year and council name.
+
+**Attributes:**
+- `tag` - HTML tag to wrap the copyright: `span`, `div`, or `p` (default: `span`)
+- `class` - Optional CSS class
+- `include_links` - Whether to include policy links: `yes` or `no` (default: `yes`)
+
+**Examples:**
+```
+[council_copyright]
+[council_copyright class="copyright"]
+[council_copyright tag="p" class="footer-copyright"]
+[council_copyright include_links="no"]
+```
+
+**Output:**
+When `include_links="yes"` (default):
+```
+© 2025 Example Council. All rights reserved | Privacy Policy | Terms and Conditions | Cookie Policy | Website Developed by Whamos Ltd
+```
+
+When `include_links="no"`:
+```
+© 2025 Example Council. All rights reserved
+```
+
 ### Page Builder Integration via Custom Fields
 
 **New in v1.9.0 (Fixed in v1.9.1):** Hero image and logo URLs are automatically added as custom fields to all pages and posts, making them accessible through page builder custom field/dynamic data features.
@@ -565,7 +592,7 @@ if ( is_wp_error( $response ) ) {
 
 This plugin follows [Semantic Versioning 2.0.0](https://semver.org/). For the versions available, see the [CHANGELOG.md](CHANGELOG.md) file.
 
-**Current Version:** 1.15.0
+**Current Version:** 1.16.0
 
 ### Version Format
 
